@@ -7,6 +7,7 @@
 		<div
 			class="popup-content"
 			:style="{ left: `${position.x}px`, top: `${position.y}px` }"
+			ref="popupContent"
 		>
 			<span
 				class="close"
@@ -29,15 +30,33 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 
 const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible']);
-const position = computed(() => store.getters['popUpModule/getPopUpPosition'])
+const position = computed(() => store.getters['popUpModule/getPopUpPosition']);
+const betHistory = computed(() => store.getters['popUpModule/getPopUpContent']);
+const popupContent = ref(null);
 
-const betHistory = computed(() => store.getters['popUpModule/getPopUpContent'])
+const closePopup = () => {
+	store.dispatch('popUpModule/closePopUp');
+};
+
+const handleClickOutside = (event) => {
+	if (popupContent.value && !popupContent.value.contains(event.target)) {
+		closePopup();
+	}
+};
+
+onMounted(() => {
+	document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+	document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -50,7 +69,6 @@ const betHistory = computed(() => store.getters['popUpModule/getPopUpContent'])
 	max-width: 300px;
 	max-height: 400px;
 	overflow: auto;
-	/* border: 2px solid #E8EFF5; */
 	background-color: #F4F7FA;
 }
 
