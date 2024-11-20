@@ -6,9 +6,8 @@
 		<div class="table-row--item">{{ item?.content?.time_game || '-' }}</div>
 		<div class="table-row--item gray">{{ item?.content?.rate.total_point || '-' }}</div>
 		<div
-			class="table-row--item clickable"
+			class="table-row--item"
 			:style="`background: ${getColor(item?.content?.rate?.total_bet_0)}`"
-			@click="item?.content.rate.total_bet_0 ? handleClick($event, 'total_bet_0') : ''"
 		>
 			{{ item?.content?.rate?.total_bet_0 || '-' }}
 		</div>
@@ -23,8 +22,9 @@
 			{{ item?.content?.rate?.handicap_point_0 || '-' }}
 		</div>
 		<div
-			class="table-row--item"
+			class="table-row--item clickable"
 			:style="`background: ${getColor(item?.content?.rate?.handicap_bet_0)}`"
+			@click="item?.content.rate.handicap_bet_0 ? handleClick($event, 'handicap_bet_0') : ''"
 		>
 			{{ item?.content?.rate?.handicap_bet_0 || '-' }}
 		</div>
