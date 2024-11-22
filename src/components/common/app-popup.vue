@@ -46,13 +46,12 @@ const computedPosition = computed(() => {
 
 	let adjustedY = y;
 
-	// Проверка, помещается ли попап по вертикали
 	if (y + popupHeight > windowHeight) {
-		adjustedY = y - popupHeight; // Если не помещается, открываем выше
+		adjustedY = y - popupHeight; 
 	}
 
-	// Ограничение по горизонтали (можно добавить, если нужно)
-	const adjustedX = Math.max(0, Math.min(x, window.innerWidth - 300)); // 300 - ширина попапа
+
+	const adjustedX = Math.max(0, Math.min(x, window.innerWidth - 300)); 
 
 	return { x: adjustedX, y: adjustedY };
 });
