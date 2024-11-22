@@ -6,15 +6,16 @@
 		<div class="table-row--item">{{ item?.content?.time_game || '-' }}</div>
 		<div class="table-row--item gray">{{ item?.content?.rate.total_point || '-' }}</div>
 		<div
-			class="table-row--item"
+			class="table-row--item clickable"
 			:style="`background: ${getColor(item?.content?.rate?.total_bet_0)}`"
+			@click="item?.content?.rate?.total_bet_0 ? handleClick($event, 'total_bet_0', item?.content?.rate.total_point) : ''"
 		>
 			{{ item?.content?.rate?.total_bet_0 || '-' }}
 		</div>
 		<div
 			class="table-row--item clickable"
 			:style="`background: ${getColor(item?.content?.rate?.total_bet_1)}`"
-			@click="item?.content.rate.total_bet_1 ? handleClick($event, 'total_bet_1') : ''"
+			@click="item?.content.rate.total_bet_1 ? handleClick($event, 'total_bet_1', item?.content?.rate.total_point) : ''"
 		>
 			{{ item?.content?.rate?.total_bet_1 || '-' }}
 		</div>
@@ -24,7 +25,7 @@
 		<div
 			class="table-row--item clickable"
 			:style="`background: ${getColor(item?.content?.rate?.handicap_bet_0)}`"
-			@click="item?.content.rate.handicap_bet_0 ? handleClick($event, 'handicap_bet_0') : ''"
+			@click="item?.content.rate.handicap_bet_0 ? handleClick($event, 'handicap_bet_0', item?.content?.rate?.handicap_point_0) : ''"
 		>
 			{{ item?.content?.rate?.handicap_bet_0 || '-' }}
 		</div>
@@ -32,8 +33,9 @@
 			{{ item?.content?.rate?.handicap_point_1 || '-' }}
 		</div>
 		<div
-			class="table-row--item"
+			class="table-row--item clickable"
 			:style="`background: ${getColor(item?.content?.rate?.handicap_bet_1)}`"
+			@click="item?.content.rate.handicap_bet_0 ? handleClick($event, 'handicap_bet_1', item?.content?.rate?.handicap_point_1) : ''"
 		>
 			{{ item?.content?.rate?.handicap_bet_1 || '-' }}
 		</div>
@@ -52,38 +54,35 @@ const store = useStore();
 
 const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible']);
 
-const windowHeight = window.innerHeight
-const popupHeight = 400;
-
-const handleClick = (event: { clientX: number; clientY: number; }, bet: string) => {
+const handleClick = (event: { clientX: number; clientY: number; }, bet: string, bet_filter: string) => {
 	if (isPopUpVisible.value) {
 		store.dispatch('popUpModule/closePopUp');
-	}
-	let newY = event.clientY;
-
-	if (newY + popupHeight > windowHeight) {
-		newY = event.clientY - popupHeight;
-	}
-
-	if (newY < 0) {
-		newY = event.clientY;
 	}
 
 	const params = {
 		content: {
-			site: item.site,
+			site: getBookmaker(item.site),
 			league: name,
 			opponent_0: item.content.opponent_0,
 			opponent_1: item.content.opponent_1,
 			bet,
+			bet_filter
 		},
 		position: {
 			x: event.clientX,
-			y: newY
+			y: event.clientY
 		}
 	};
 	store.dispatch('popUpModule/fetchAndShowPopUp', params);
 };
+
+const getBookmaker = (site: string) => {
+	if (site === 'akty.com') {
+		return 'ob'
+	} else if (site === 'fb.com') {
+		return 'fb'
+	}
+}
 
 const getColor = (
 	item: string | undefined,
