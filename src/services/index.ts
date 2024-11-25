@@ -34,3 +34,18 @@ export const fetchBetHistroy = async(params: Params)=>{
 	  throw error;
 	}
 }
+
+export const fetchGameHistory = async(league: string, match: string)=>{
+	try {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/get-match-history/?league_name=${league}&match_name=${match}`,{ 
+			method: 'GET',
+			headers: {
+			  'Content-Type': 'application/json',
+			},
+		})
+		const data = await response.json()
+		return data.history.length > 100 ?  data.history.slice(0, 100): data.history
+	} catch (error) {
+		console.error('Error fetching game history', error)
+	}
+}

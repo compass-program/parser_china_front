@@ -57,7 +57,7 @@ import appTable from '@/components/league/app-table.vue'
 import iconArrow from '@/components/icons/iconArrow.vue'
 import iconRefresh from '@/components/icons/iconRefresh.vue'
 import { reactive } from 'vue';
-import type { League } from '@/interfaces';
+import type { LeagueData } from '@/interfaces';
 import { leagueStorage } from '@/services/socketIo';
 
 const { name, colorTitle } = defineProps(['name', 'colorTitle'])
@@ -65,7 +65,7 @@ const { name, colorTitle } = defineProps(['name', 'colorTitle'])
 const state = reactive({
     collapse: false,
     refresh: false,
-    league: [] as League[],
+    league: [] as LeagueData[],
 });
 </script>
 
