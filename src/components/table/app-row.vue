@@ -1,44 +1,46 @@
 <template v-if="item">
 	<div
 		class="table-row"
-		:class="{ gray: item?.site === 'fb.com' }"
+		:class="{ gray: item?.site === 'fb.com' || item.bookmaker == 'fb' }"
 	>
-		<div class="table-row--item">{{ item?.content?.time_game || '-' }}</div>
-		<div class="table-row--item gray">{{ item?.content?.rate.total_point || '-' }}</div>
+		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
+		<div class="table-row--item gray">{{ item.bookmaker ? item.total_point : item?.rate.total_point || '-' }}</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(item?.content?.rate?.total_bet_0)}`"
-			@click="item?.content.rate.total_bet_0 ? handleClick($event, 'total_bet_0') : ''"
+			:style="`background: ${getColor(item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0)}`"
+			@click="item.total_bet_0 || item?.rate?.total_bet_0 ? handleClick($event, 'total_bet_0', item.bookmaker ? item.total_point : item?.rate?.total_point) : ''"
 		>
-			{{ item?.content?.rate?.total_bet_0 || '-' }}
+			{{ item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0 || '-' }}
 		</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(item?.content?.rate?.total_bet_1)}`"
-			@click="item?.content.rate.total_bet_1 ? handleClick($event, 'total_bet_1') : ''"
+			:style="`background: ${getColor(item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1)}`"
+			@click="item?.rate?.total_bet_1 || item?.total_bet_1 ? handleClick($event, 'total_bet_1', item.bookmaker ? item.total_point : item?.rate?.total_point) : ''"
 		>
-			{{ item?.content?.rate?.total_bet_1 || '-' }}
+			{{ item.bookmaker ? item.total_point : item?.rate?.total_bet_1 || '-' }}
 		</div>
 		<div class="table-row--item gray">
-			{{ item?.content?.rate?.handicap_point_0 || '-' }}
+			{{ item.bookmaker ? item.handicap_point_0 : item?.rate?.handicap_point_0 || '-' }}
 		</div>
 		<div
-			class="table-row--item"
-			:style="`background: ${getColor(item?.content?.rate?.handicap_bet_0)}`"
+			class="table-row--item clickable"
+			:style="`background: ${getColor(item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0)}`"
+			@click="item?.rate?.handicap_bet_0 || item?.handicap_bet_0 ? handleClick($event, 'handicap_bet_0', item.bookmaker ? item.handicap_point_0 : item?.rate?.handicap_point_0) : ''"
 		>
-			{{ item?.content?.rate?.handicap_bet_0 || '-' }}
+			{{ item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0 || '-' }}
 		</div>
 		<div class="table-row--item gray">
-			{{ item?.content?.rate?.handicap_point_1 || '-' }}
+			{{ item.bookmaker ? item.handicap_point_1 : item?.rate?.handicap_point_1 || '-' }}
 		</div>
 		<div
-			class="table-row--item"
-			:style="`background: ${getColor(item?.content?.rate?.handicap_bet_1)}`"
+			class="table-row--item clickable"
+			:style="`background: ${getColor(item.bookmaker ? item.handicap_bet_1 : item?.rate?.handicap_bet_1)}`"
+			@click="item?.rate?.handicap_bet_1 || item?.handicap_bet_1 ? handleClick($event, 'handicap_bet_1', item.bookmaker ? item.handicap_point_1 : item?.rate?.handicap_point_1) : ''"
 		>
-			{{ item?.content?.rate?.handicap_bet_1 || '-' }}
+			{{ item.bookmaker ? item.handicap_bet_1 : item?.rate?.handicap_bet_1 || '-' }}
 		</div>
 		<div class="table-row--item">
-			{{ item?.content?.server_time ? item?.content?.server_time : '-' }}
+			{{ item?.server_time ? item?.server_time : '-' }}
 		</div>
 	</div>
 </template>
@@ -47,43 +49,42 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-const { item, name } = defineProps(['item', 'name'])
+const { item, name, opponents } = defineProps(['item', 'name', 'opponents'])
 const store = useStore();
 
 const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible']);
 
-const windowHeight = window.innerHeight
-const popupHeight = 400;
+const opponentsArr = opponents.split('-')
 
-const handleClick = (event: { clientX: number; clientY: number; }, bet: string) => {
+const handleClick = (event: { clientX: number; clientY: number; }, bet: string, bet_filter: string) => {
 	if (isPopUpVisible.value) {
 		store.dispatch('popUpModule/closePopUp');
-	}
-	let newY = event.clientY;
-
-	if (newY + popupHeight > windowHeight) {
-		newY = event.clientY - popupHeight;
-	}
-
-	if (newY < 0) {
-		newY = event.clientY;
 	}
 
 	const params = {
 		content: {
-			site: item.site,
+			site: item.bookmaker || getBookmaker(item.site),
 			league: name,
-			opponent_0: item.content.opponent_0,
-			opponent_1: item.content.opponent_1,
+			opponent_0: item.opponent_0 ? item.opponent_0 : opponentsArr[0],
+			opponent_1: item.opponent_1 ? item.opponent_1 : opponentsArr[1],
 			bet,
+			bet_filter
 		},
 		position: {
 			x: event.clientX,
-			y: newY
+			y: event.clientY
 		}
 	};
 	store.dispatch('popUpModule/fetchAndShowPopUp', params);
 };
+
+const getBookmaker = (site: string) => {
+	if (site === 'akty.com') {
+		return 'ob'
+	} else if (site === 'fb.com') {
+		return 'fb'
+	}
+}
 
 const getColor = (
 	item: string | undefined,
