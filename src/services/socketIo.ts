@@ -135,9 +135,9 @@ const addToLeague =async (name: string, data: LeagueData[], site: string) => {
                     const buffer = league.value[matchKey] || [];
                     league.value[matchKey] = [newEntry, ...buffer];
 
-                    if (league.value[matchKey].length > league.maxLength) {
-                        league.value[matchKey].length = league.maxLength;
-                    }
+                    // if (league.value[matchKey].length > league.maxLength) {
+                    //     league.value[matchKey].length = league.maxLength;
+                    // }
 
                     if(match.rate){
                         addToHistory(match.rate, name, matchKey);
