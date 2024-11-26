@@ -6,9 +6,11 @@
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
 		<div class="table-row--item gray">{{ item.bookmaker ? item.total_point : item?.rate.total_point || '-' }}</div>
 		<div
+
 			class="table-row--item clickable"
 			:style="`background: ${getColor(item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0)}`"
 			@click="item.total_bet_0 || item?.rate?.total_bet_0 ? handleClick($event, 'total_bet_0', item.bookmaker ? item.total_point : item?.rate?.total_point) : ''"
+
 		>
 			{{ item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0 || '-' }}
 		</div>
@@ -24,8 +26,10 @@
 		</div>
 		<div
 			class="table-row--item clickable"
+
 			:style="`background: ${getColor(item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0)}`"
 			@click="item?.rate?.handicap_bet_0 || item?.handicap_bet_0 ? handleClick($event, 'handicap_bet_0', item.bookmaker ? item.handicap_point_0 : item?.rate?.handicap_point_0) : ''"
+
 		>
 			{{ item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0 || '-' }}
 		</div>
