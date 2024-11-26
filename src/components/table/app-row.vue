@@ -6,7 +6,6 @@
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
 		<div class="table-row--item gray">{{ total_point || '-' }}</div>
 		<div
-
 			class="table-row--item clickable"
 			:style="`background: ${getColor(total_bet_0)}`"
 			@click="total_bet_0 ? handleClick($event, 'total_bet_0', total_point) : ''"
@@ -97,7 +96,7 @@ const handleClick = (event: { clientX: number; clientY: number; }, bet: string, 
 			opponent_0: item.opponent_0 ? item.opponent_0 : opponentsArr[0],
 			opponent_1: item.opponent_1 ? item.opponent_1 : opponentsArr[1],
 			bet,
-			bet_filter
+			bet_filter: bet_filter.includes('+') ? bet_filter.replace('+', '%2B') : bet_filter
 		},
 		position: {
 			x: event.clientX,
