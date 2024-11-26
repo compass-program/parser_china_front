@@ -100,13 +100,13 @@ const getPriority = (color: string): number => {
 
 const sortByTime=(data: LeagueData[]) =>{
     return data.sort((a, b) => {
-        const timeA = a.time_game.split(':').map(Number);
-        const timeB = b.time_game.split(':').map(Number);
+        const timeA = a.server_time.split(':').map(Number);
+        const timeB = b.server_time.split(':').map(Number);
 
         const timestampA = timeA[0] * 3600 + timeA[1] * 60 + timeA[2];
         const timestampB = timeB[0] * 3600 + timeB[1] * 60 + timeB[2];
 
-        return timestampA - timestampB;
+        return timestampB-timestampA ;
     });
 }
 

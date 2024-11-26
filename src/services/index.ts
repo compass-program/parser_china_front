@@ -1,3 +1,5 @@
+import { useStore } from 'vuex';
+
 export const fetchColorHistory = async (site: string, league: string, opponent_0: string, opponent_1: string) => {
 	try {
 	  const response = await fetch(`${import.meta.env.VITE_API_URL}/get-game/${site}/${league}/${opponent_0}/${opponent_1}`, {
@@ -20,6 +22,7 @@ interface Params{
 }
 
 export const fetchBetHistroy = async(params: Params)=>{
+
 	try {
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/get-bet/?league_name=${params.league}&match_name=${params.opponent_0+'-'+params.opponent_1}&bookmaker=${params.site}&bet_type=${params.bet}&bet_filter=${params.bet_filter}`, {
 			method: 'GET',
@@ -28,6 +31,7 @@ export const fetchBetHistroy = async(params: Params)=>{
 			},
 		})
 		const data = await response.json()
+
 		return data.coeff_history
 	} catch (error) {
 		console.error('Error fetching bet history:', error);

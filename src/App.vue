@@ -3,6 +3,7 @@ import { useSocket } from '@/services/socketIo'
 import appLeague from './components/app-league.vue'
 import { onUnmounted, ref } from 'vue'
 import appPopup from '@/components/common/app-popup.vue';
+import NotificationProvider from './components/common/notificationProvider.vue';
 
 const { openSocket, closeSocket } = useSocket(import.meta.env.VITE_API_URL)
 
@@ -81,6 +82,7 @@ const logIn = () => {
                 :color-title="'#FF00C7'"
             />
             <appPopup ref="popup"></appPopup>
+            <NotificationProvider />
         </div>
     </template>
 </template>
