@@ -6,7 +6,10 @@
 	>
 		<div
 			class="popup-content"
+
 			:style="{ left: `${computedPosition.x}px`, top: `${computedPosition.y}px` }"
+
+
 			ref="popupContent"
 		>
 			<span
@@ -43,6 +46,7 @@ const betHistory = computed(() => store.getters['popUpModule/getPopUpContent']);
 
 const popupContent = useTemplateRef<HTMLElement>('popupContent');
 
+
 const computedPosition = computed(() => {
 	const { x, y } = position.value;
 	const popupHeight = popupContent.value ? popupContent.value.offsetHeight : 0;
@@ -62,6 +66,7 @@ const computedPosition = computed(() => {
 const handleClickOutside = (event: Event) => {
 	if (popupContent.value && !popupContent.value.contains(event.target as Node)) {
 		store.dispatch('popUpModule/closePopUp');
+
 	}
 };
 

@@ -6,6 +6,7 @@
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
 		<div class="table-row--item gray">{{ total_point || '-' }}</div>
 		<div
+
 			class="table-row--item clickable"
 			:style="`background: ${getColor(total_bet_0)}`"
 			@click="total_bet_0 ? handleClick($event, 'total_bet_0', total_point) : ''"
