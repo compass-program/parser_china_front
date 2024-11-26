@@ -37,6 +37,7 @@ interface FetchAndShowPopUpPayload {
 		opponent_0: string;
 		opponent_1: string;
 		bet: string,
+    bet_filter: string,
 	}
   	position: {x: number, y: number}
 }

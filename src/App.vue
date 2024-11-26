@@ -2,7 +2,7 @@
 import { useSocket } from '@/services/socketIo'
 import appLeague from './components/app-league.vue'
 import { onUnmounted, ref } from 'vue'
-import PopUp from '@/components/common/app-popup.vue';
+import appPopup from '@/components/common/app-popup.vue';
 
 const { openSocket, closeSocket } = useSocket(import.meta.env.VITE_API_URL)
 
@@ -80,7 +80,7 @@ const logIn = () => {
                 :name="'Rocket Basketball League Women'"
                 :color-title="'#FF00C7'"
             />
-            <PopUp ref="popup"></PopUp>
+            <appPopup ref="popup"></appPopup>
         </div>
     </template>
 </template>
