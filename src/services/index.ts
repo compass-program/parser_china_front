@@ -48,7 +48,7 @@ export const fetchGameHistory = async(league: string, match: string)=>{
 			},
 		})
 		const data = await response.json()
-		return data.history.length > 100 ?  data.history.slice(0, 100): data.history
+		return data.history
 	} catch (error) {
 		console.error('Error fetching game history', error)
 	}
