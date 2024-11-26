@@ -2,10 +2,14 @@ import { type InjectionKey } from 'vue';
 import { createStore, Store } from 'vuex';
 import matchColorHistory from '@/store/modules/matchsColorHistory';
 import popUpModule from '@/store/modules/popUp';
+
+import notificationModule from './modules/notifications';
+
 export const store = createStore({
   modules: {
     matchColorHistory,
-    popUpModule
+    popUpModule,
+    notificationModule
   }
 });
 

@@ -2,7 +2,7 @@
 	<div
 		v-if="isPopUpVisible"
 		class="popup"
-		@click.self="closePopup"
+		@click.self="store.dispatch('popUpModule/closePopUp');"
 	>
 		<div
 			class="popup-content"
@@ -21,15 +21,18 @@
 				<span
 					v-for="(item, key, index) in bet"
 					:key="'item' + index"
-					:class="{ 'red': key !== 'server_time' && item && typeof item === 'string' && item.includes('-'), 'green': key !== 'server_time' && item && typeof item === 'string' && !item.includes('-') }"
+					:class="{
+						'red': key.toString() !== 'server_time' && item && typeof item === 'string' && item.includes('-'),
+						'green': key.toString() !== 'server_time' && item && typeof item === 'string' && !item.includes('-')
+					}"
 				>{{ item ? item : '-' }}</span>
 			</div>
 		</div>
 	</div>
 </template>
 
-<script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -37,7 +40,8 @@ const store = useStore();
 const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible']);
 const position = computed(() => store.getters['popUpModule/getPopUpPosition']);
 const betHistory = computed(() => store.getters['popUpModule/getPopUpContent']);
-const popupContent = ref(null);
+
+const popupContent = useTemplateRef<HTMLElement>('popupContent');
 
 const computedPosition = computed(() => {
 	const { x, y } = position.value;
@@ -47,17 +51,16 @@ const computedPosition = computed(() => {
 	let adjustedY = y;
 
 	if (y + popupHeight > windowHeight) {
-		adjustedY = y - popupHeight; 
+		adjustedY = y - popupHeight;
 	}
 
-
-	const adjustedX = Math.max(0, Math.min(x, window.innerWidth - 300)); 
+	const adjustedX = Math.max(0, Math.min(x, window.innerWidth - 300));
 
 	return { x: adjustedX, y: adjustedY };
 });
 
-const handleClickOutside = (event) => {
-	if (popupContent.value && !popupContent.value.contains(event.target)) {
+const handleClickOutside = (event: Event) => {
+	if (popupContent.value && !popupContent.value.contains(event.target as Node)) {
 		store.dispatch('popUpModule/closePopUp');
 	}
 };
