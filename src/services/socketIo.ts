@@ -2,9 +2,11 @@ import { io, Socket } from 'socket.io-client';
 import { type LeagueData, type LeagueStorage, type RateData } from '@/interfaces';
 import { reactive, ref } from 'vue';
 import { store } from '@/store';
+import {fetchGameHistory} from '@/services/index'
 import soundOne from '@/assets/sound/sound_1.mp3'
 import soundTwo from '@/assets/sound/sound_2.mp3'
 import soundThree from '@/assets/sound/sound_3.mp3'
+
 export const leagueStorage: LeagueStorage = reactive({
     'IPBL Pro Division': { value: {}, maxLength: 100 },
     'IPBL Pro Division Women': { value: {}, maxLength: 100 },
@@ -96,7 +98,19 @@ const getPriority = (color: string): number => {
     }
 };
 
-const addToLeague = (name: string, data: LeagueData[], site: string) => {
+const sortByTime=(data: LeagueData[]) =>{
+    return data.sort((a, b) => {
+        const timeA = a.time_game.split(':').map(Number);
+        const timeB = b.time_game.split(':').map(Number);
+
+        const timestampA = timeA[0] * 3600 + timeA[1] * 60 + timeA[2];
+        const timestampB = timeB[0] * 3600 + timeB[1] * 60 + timeB[2];
+
+        return timestampA - timestampB;
+    });
+}
+
+const addToLeague =async (name: string, data: LeagueData[], site: string) => {
     try {
         const league = leagueStorage[name];
 
@@ -105,10 +119,10 @@ const addToLeague = (name: string, data: LeagueData[], site: string) => {
             return;
         }
 
-        data.forEach((match) => {
+        data.forEach(async (match) => {
             const matchKey = `${match.opponent_0}-${match.opponent_1}`;
-            if(match.opponent_0!==' ' && match.opponent_1!==' '){
-                if (match.is_end_game) {                      
+            if (match.opponent_0 !== ' ' && match.opponent_1 !== ' ') {
+                if (match.is_end_game) {
                     if (league.value[matchKey]) {
                         delete league.value[matchKey];
                         store.dispatch('matchColorHistory/removeMatchColorHistory', {
@@ -117,18 +131,35 @@ const addToLeague = (name: string, data: LeagueData[], site: string) => {
                         });
                     }
                 } else {
-                    const newEntry = { content: match, site };
+                    const newEntry = { ...match, site };
                     const buffer = league.value[matchKey] || [];
                     league.value[matchKey] = [newEntry, ...buffer];
-                    
+
                     if (league.value[matchKey].length > league.maxLength) {
                         league.value[matchKey].length = league.maxLength;
                     }
-                    
-                    addToHistory(match.rate, name, matchKey);
+
+                    if(match.rate){
+                        addToHistory(match.rate, name, matchKey);
+                    }
+
+                    if (league.value[matchKey].length < 2) {
+
+                        const timeParts = match.time_game.split(' ')[1]; 
+                        const [minutes] = timeParts.split(':').map(Number); 
+
+                        if(timeParts[0] !=='I' || (timeParts[0] =='I' && minutes<11)){
+
+                            const historyGame = await fetchGameHistory(name, matchKey)
+                            
+                            league.value[matchKey] = [ ...league.value[matchKey],...historyGame]
+                
+                            league.value[matchKey] = sortByTime(league.value[matchKey])
+                        }
+                    }
                 }
             }
-});
+        });
     } catch (error) {
         console.error(`Ошибка при обновлении ${name}:`, error);
     }

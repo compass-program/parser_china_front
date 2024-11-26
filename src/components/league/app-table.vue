@@ -5,7 +5,7 @@
                 {{ props.opponents }}
             </div>
             <div class="match-title--score">
-                {{ props.match[0].content.score_game }}
+                {{ props.match[0].score_game }}
             </div>
             <div class="match-title--counter">
                 <div
@@ -31,6 +31,7 @@
                         v-if="item"
                         :item="item"
                         :name="name"
+                        :opponents="props.opponents"
                     ></app-row>
                 </template>
 
@@ -81,7 +82,7 @@
 import appRow from '@/components/table/app-row.vue'
 import { useStore } from 'vuex'
 import { computed, ref, watch } from 'vue'
-import type { League, RateData } from '@/interfaces';
+import type { LeagueData, RateData } from '@/interfaces';
 import { fetchColorHistory } from '@/services';
 import { getColor } from '@/services/socketIo';
 
@@ -89,23 +90,23 @@ interface PropsTable {
     name: string,
     opponents: string,
     collapse: boolean,
-    match: League[],
+    match: LeagueData[],
     refresh: boolean
 }
 const props = defineProps<PropsTable>()
 
 const colors = ['#FAFF00', '#FF8A00', '#FF0000', '#9E00FF']
 
-const opponent_0 = ref(props.match[0].content.opponent_0)
-const opponent_1 = ref(props.match[0].content.opponent_1)
+const opponent_0 = ref(props.match[0].opponent_0)
+const opponent_1 = ref(props.match[0].opponent_1)
 
 const colorHistory = ref<RateData[]>([])
 
 watch(() => props.refresh, async (newValue, oldValue) => {
     if (newValue !== oldValue && props.collapse) {
         Promise.allSettled([
-            fetchColorHistory('fb.com', props.name, opponent_0.value, opponent_1.value),
-            fetchColorHistory('akty.com', props.name, opponent_0.value, opponent_1.value)
+            fetchColorHistory('fb.com', props.name, opponent_0.value as string, opponent_1.value as string),
+            fetchColorHistory('akty.com', props.name, opponent_0.value as string, opponent_1.value as string)
         ])
             .then(results => {
                 const [result1, result2] = results;

@@ -6,7 +6,10 @@
 	>
 		<div
 			class="popup-content"
-			:style="{ left: `${position.x}px`, top: `${position.y}px` }"
+
+			:style="{ left: `${computedPosition.x}px`, top: `${computedPosition.y}px` }"
+
+
 			ref="popupContent"
 		>
 			<span
@@ -14,15 +17,14 @@
 				@click="store.dispatch('popUpModule/closePopUp');"
 			>&times;</span>
 			<div
-				v-for="(bet, key, idx) in betHistory"
+				v-for="(bet, idx) in betHistory"
 				:key="'bet' + idx"
 				class="popup-content__row"
 			>
-				<span>{{ key }}</span>
 				<span
-					v-for="(item, index) in bet"
+					v-for="(item, key, index) in bet"
 					:key="'item' + index"
-					:class="{ 'red': item && typeof item === 'string' && item.includes('-'), 'green': item && typeof item === 'string' && !item.includes('-') }"
+					:class="{ 'red': key !== 'server_time' && item && typeof item === 'string' && item.includes('-'), 'green': key !== 'server_time' && item && typeof item === 'string' && !item.includes('-') }"
 				>{{ item ? item : '-' }}</span>
 			</div>
 		</div>
@@ -40,13 +42,28 @@ const position = computed(() => store.getters['popUpModule/getPopUpPosition']);
 const betHistory = computed(() => store.getters['popUpModule/getPopUpContent']);
 const popupContent = ref(null);
 
-const closePopup = () => {
-	store.dispatch('popUpModule/closePopUp');
-};
+
+const computedPosition = computed(() => {
+	const { x, y } = position.value;
+	const popupHeight = popupContent.value ? popupContent.value.offsetHeight : 0;
+	const windowHeight = window.innerHeight;
+
+	let adjustedY = y;
+
+	if (y + popupHeight > windowHeight) {
+		adjustedY = y - popupHeight; 
+	}
+
+
+	const adjustedX = Math.max(0, Math.min(x, window.innerWidth - 300)); 
+
+	return { x: adjustedX, y: adjustedY };
+});
 
 const handleClickOutside = (event) => {
 	if (popupContent.value && !popupContent.value.contains(event.target)) {
-		closePopup();
+		store.dispatch('popUpModule/closePopUp');
+
 	}
 };
 
@@ -67,7 +84,7 @@ onUnmounted(() => {
 	border-radius: 5px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	max-width: 300px;
-	max-height: 400px;
+	max-height: 290px;
 	overflow: auto;
 	background-color: #F4F7FA;
 }
@@ -76,6 +93,7 @@ onUnmounted(() => {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-gap: 24px;
+	align-items: center;
 }
 
 span {
