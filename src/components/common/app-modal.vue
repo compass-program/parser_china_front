@@ -8,6 +8,7 @@
 				class="modal-content__action"
 				@click="emit('close')"
 			> &#65794;</div>
+			<div class="modal-content__title">{{ title }}</div>
 			<div class="modal-content--wrp">
 
 				<div
@@ -23,7 +24,8 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-	content: String[]
+	content: String[],
+	title: String
 }>()
 
 const emit = defineEmits<{
@@ -46,11 +48,16 @@ const emit = defineEmits<{
 
 .modal-content {
 	background-color: #fff;
-    padding: 25px;
+	padding: 25px;
 	border-radius: 20px;
 	max-width: 60vw;
 	margin: auto;
 	position: relative;
+}
+
+.modal-content__title {
+	font-size: 24px;
+    font-weight: 700px;
 }
 
 .modal-content--wrp {

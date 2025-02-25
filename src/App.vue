@@ -13,6 +13,7 @@ const login = ref('')
 const password = ref('')
 const envAuth = import.meta.env.VITE_AUTH === 'true'
 const logsContent = ref<string[]>([])
+const logsTitle = ref('')
 
 const isModalOpen = ref(false)
 
@@ -34,14 +35,17 @@ const handleFetchLogs = async (type: string) => {
     switch (type) {
         case 'favorite':
             logsContent.value = await fetchLogsFavorite()
+            logsTitle.value = 'Логи по ИЗБРАННОЕ'
             isModalOpen.value = true
             break
         case 'ob':
             logsContent.value = await fetchLogsOB()
+            logsTitle.value = 'Логи по OB'
             isModalOpen.value = true
             break
         case 'fb':
             logsContent.value = await fetchLogsFB()
+            logsTitle.value = 'Логи по FB'
             isModalOpen.value = true
             break
         default:
@@ -128,6 +132,7 @@ const handleFetchLogs = async (type: string) => {
         </div>
         <AppModal
             :content="logsContent"
+            :title="logsTitle"
             v-if="isModalOpen"
             @close="isModalOpen = false"
         />
