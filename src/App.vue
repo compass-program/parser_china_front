@@ -4,13 +4,17 @@ import appLeague from './components/app-league.vue'
 import { onUnmounted, ref } from 'vue'
 import appPopup from '@/components/common/app-popup.vue';
 import NotificationProvider from './components/common/notificationProvider.vue';
-
+import { fetchLogsFavorite, checkFavorite, fetchLogsOB, fetchLogsFB } from '@/services/index'
+import AppModal from './components/common/app-modal.vue';
 const { openSocket, closeSocket } = useSocket(import.meta.env.VITE_API_URL)
 
 const isAuth = ref(sessionStorage?.getItem('isAuth') === 'true' ? true : false)
 const login = ref('')
 const password = ref('')
 const envAuth = import.meta.env.VITE_AUTH === 'true'
+const logsContent = ref<string[]>([])
+
+const isModalOpen = ref(false)
 
 onUnmounted(() => {
     closeSocket();
@@ -23,6 +27,25 @@ const logIn = () => {
         sessionStorage.setItem('isAuth', 'true')
         isAuth.value = true
         openSocket()
+    }
+}
+
+const handleFetchLogs = async (type: string) => {
+    switch (type) {
+        case 'favorite':
+            logsContent.value = await fetchLogsFavorite()
+            isModalOpen.value = true
+            break
+        case 'ob':
+            logsContent.value = await fetchLogsOB()
+            isModalOpen.value = true
+            break
+        case 'fb':
+            logsContent.value = await fetchLogsFB()
+            isModalOpen.value = true
+            break
+        default:
+            break
     }
 }
 </script>
@@ -55,9 +78,28 @@ const logIn = () => {
     </template>
     <template v-else>
         <div class="up-panel--wrp">
+
             <div class="up-panel">
                 <p>FB -<span class="blue">Синий</span> </p>
                 <p>OB - <span class="white">Белый</span> </p>
+            </div>
+            <div class="up-panel__btns-wrp">
+                <button
+                    class="btn"
+                    @click="handleFetchLogs('fb')"
+                >Лог FB</button>
+                <button
+                    class="btn"
+                    @click="handleFetchLogs('ob')"
+                >Лог OB</button>
+                <button
+                    class="btn"
+                    @click="checkFavorite"
+                >Проверить избранное</button>
+                <button
+                    class="btn"
+                    @click="handleFetchLogs('favorite')"
+                >Лог избранное</button>
             </div>
         </div>
         <div class="app-wrp">
@@ -84,6 +126,11 @@ const logIn = () => {
             <appPopup ref="popup"></appPopup>
             <NotificationProvider />
         </div>
+        <AppModal
+            :content="logsContent"
+            v-if="isModalOpen"
+            @close="isModalOpen = false"
+        />
     </template>
 </template>
 
@@ -96,13 +143,13 @@ const logIn = () => {
 }
 
 .up-panel--wrp {
-    width: calc(100% - 36px);
+    width: calc(100vw - 36px);
     padding: 5px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     border-radius: 3px;
-    margin: 0 18px;
+    margin: 0 auto;
     background: linear-gradient(90deg, #D0DEEA 0%, #1F2B3E 40%, #1F2B3E 60%, #D0DEEA 100%);
     margin-top: 20px;
 }
@@ -110,7 +157,9 @@ const logIn = () => {
 .up-panel {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     grid-gap: 24px;
+    margin-left: calc(50% - 92px);
 }
 
 .up-panel p {
@@ -138,6 +187,19 @@ const logIn = () => {
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+}
+
+.up-panel__btns-wrp {
+    display: flex;
+    align-items: center;
+    grid-gap: 8px;
+    margin-right: 15%;
+}
+
+.up-panel__btns-wrp .btn {
+    font-size: 14px;
+    padding: 3px 10px;
+    width: fit-content;
 }
 
 .league {

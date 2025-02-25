@@ -1,4 +1,4 @@
-import { useStore } from 'vuex';
+import { store } from '@/store';
 
 export const fetchColorHistory = async (site: string, league: string, opponent_0: string, opponent_1: string) => {
 	try {
@@ -52,4 +52,68 @@ export const fetchGameHistory = async(league: string, match: string)=>{
 	} catch (error) {
 		console.error('Error fetching game history', error)
 	}
+}
+
+export const fetchLogsFB = async()=>{
+	try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/logs/parser-logs/fb `, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+        return data.logs.reverse();
+    } catch (error) {
+        console.error('Error fetching logs', error)
+    }
+}
+
+export const fetchLogsOB = async()=>{
+	try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/logs/parser-logs/ob `, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+		console.log(data);
+        return data.logs.reverse();
+    } catch (error) {
+        console.error('Error fetching logs', error)
+    }
+}
+
+export const checkFavorite = async () => {
+	try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/check_fav/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+			  'X-API-Key': '82a6f40e384d25027e516c47fe317869'
+            },
+        })
+        const data = await response.json()
+		store.dispatch('notificationModule/addNotification', {text:data.status || data.detail});
+        return data
+    } catch (error) {
+        console.error('Error fetching favorite', error)
+    }
+}
+
+export const fetchLogsFavorite = async()=>{
+	try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/logs/parser-logs/fav `, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+		console.log(data);
+        return data.logs.reverse();
+    } catch (error) {
+        console.error('Error fetching logs favorite', error)
+    }
 }
