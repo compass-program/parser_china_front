@@ -4,44 +4,40 @@
 		:class="{ gray: item?.site === 'fb.com' || item.bookmaker == 'fb' }"
 	>
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
-		<div class="table-row--item gray">{{ item.bookmaker ? item.total_point : item?.rate.total_point || '-' }}</div>
+		<div class="table-row--item gray">{{ total_point || '-' }}</div>
 		<div
-
 			class="table-row--item clickable"
-			:style="`background: ${getColor(item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0)}`"
-			@click="item.total_bet_0 || item?.rate?.total_bet_0 ? handleClick($event, 'total_bet_0', item.bookmaker ? item.total_point : item?.rate?.total_point) : ''"
-
+			:style="`background: ${getColor(total_bet_0)}`"
+			@click="total_bet_0 ? handleClick($event, 'total_bet_0', total_point) : ''"
 		>
-			{{ item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0 || '-' }}
+			{{ total_bet_0 || '-' }}
 		</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1)}`"
-			@click="item?.rate?.total_bet_1 || item?.total_bet_1 ? handleClick($event, 'total_bet_1', item.bookmaker ? item.total_point : item?.rate?.total_point) : ''"
+			:style="`background: ${getColor(total_bet_1)}`"
+			@click="total_bet_1 ? handleClick($event, 'total_bet_1', total_point) : ''"
 		>
-			{{ item.bookmaker ? item.total_point : item?.rate?.total_bet_1 || '-' }}
+			{{ total_bet_1 || '-' }}
 		</div>
 		<div class="table-row--item gray">
-			{{ item.bookmaker ? item.handicap_point_0 : item?.rate?.handicap_point_0 || '-' }}
+			{{ handicap_point_0 || '-' }}
 		</div>
 		<div
 			class="table-row--item clickable"
-
-			:style="`background: ${getColor(item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0)}`"
-			@click="item?.rate?.handicap_bet_0 || item?.handicap_bet_0 ? handleClick($event, 'handicap_bet_0', item.bookmaker ? item.handicap_point_0 : item?.rate?.handicap_point_0) : ''"
-
+			:style="`background: ${getColor(handicap_bet_0)}`"
+			@click="handicap_bet_0 ? handleClick($event, 'handicap_bet_0', handicap_point_0) : ''"
 		>
-			{{ item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0 || '-' }}
+			{{ handicap_bet_0 || '-' }}
 		</div>
 		<div class="table-row--item gray">
-			{{ item.bookmaker ? item.handicap_point_1 : item?.rate?.handicap_point_1 || '-' }}
+			{{ handicap_point_1 || '-' }}
 		</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(item.bookmaker ? item.handicap_bet_1 : item?.rate?.handicap_bet_1)}`"
-			@click="item?.rate?.handicap_bet_1 || item?.handicap_bet_1 ? handleClick($event, 'handicap_bet_1', item.bookmaker ? item.handicap_point_1 : item?.rate?.handicap_point_1) : ''"
+			:style="`background: ${getColor(handicap_bet_1)}`"
+			@click="handicap_bet_1 ? handleClick($event, 'handicap_bet_1', handicap_point_1) : ''"
 		>
-			{{ item.bookmaker ? item.handicap_bet_1 : item?.rate?.handicap_bet_1 || '-' }}
+			{{ handicap_bet_1 || '-' }}
 		</div>
 		<div class="table-row--item">
 			{{ item?.server_time ? item?.server_time : '-' }}
@@ -60,6 +56,34 @@ const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible'
 
 const opponentsArr = opponents.split('-')
 
+const total_point = computed(() => {
+	return item.bookmaker ? item.total_point : item?.rate?.total_point
+})
+
+const total_bet_0 = computed(() => {
+	return item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0
+})
+
+const total_bet_1 = computed(() => {
+	return item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1
+})
+
+const handicap_point_0 = computed(() => {
+	return item.bookmaker ? item.handicap_point_0 : item?.rate?.handicap_point_0
+})
+
+const handicap_bet_0 = computed(() => {
+	return item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0
+})
+
+const handicap_point_1 = computed(() => {
+	return item.bookmaker ? item.handicap_point_1 : item?.rate?.handicap_point_1
+})
+
+const handicap_bet_1 = computed(() => {
+	return item.bookmaker ? item.handicap_bet_1 : item?.rate?.handicap_bet_1
+})
+
 const handleClick = (event: { clientX: number; clientY: number; }, bet: string, bet_filter: string) => {
 	if (isPopUpVisible.value) {
 		store.dispatch('popUpModule/closePopUp');
@@ -72,7 +96,7 @@ const handleClick = (event: { clientX: number; clientY: number; }, bet: string, 
 			opponent_0: item.opponent_0 ? item.opponent_0 : opponentsArr[0],
 			opponent_1: item.opponent_1 ? item.opponent_1 : opponentsArr[1],
 			bet,
-			bet_filter
+			bet_filter: bet_filter.includes('+') ? bet_filter.replace('+', '%2B') : bet_filter
 		},
 		position: {
 			x: event.clientX,

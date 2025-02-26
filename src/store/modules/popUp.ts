@@ -37,18 +37,20 @@ interface FetchAndShowPopUpPayload {
 		opponent_0: string;
 		opponent_1: string;
 		bet: string,
+    bet_filter: string,
 	}
   	position: {x: number, y: number}
 }
 
 const actions = {
-  async fetchAndShowPopUp({ commit }: { commit: Function }, payload: FetchAndShowPopUpPayload) {
+  async fetchAndShowPopUp({ commit, dispatch }: { commit: Function, dispatch: Function }, payload: FetchAndShowPopUpPayload) {
     try {
       const content = await fetchBetHistroy(payload.content);
       if(Object.keys(content).length){
         commit('openPopUp', { content, position: payload.position });
       }
     } catch (error) {
+      dispatch('notificationModule/addNotification', {text: 'Значение не найдено в базе данных, попробуйте позже'}, {root:true})
       console.error('Error fetching bet history:', error);
     }
   },
