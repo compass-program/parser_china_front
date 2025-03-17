@@ -1,34 +1,48 @@
 <script setup lang="ts">
 import { useSocket } from '@/services/socketIo'
 import appLeague from './components/app-league.vue'
-import { onUnmounted, ref } from 'vue'
-import appPopup from '@/components/common/app-popup.vue';
-import NotificationProvider from './components/common/notificationProvider.vue';
+import { onUnmounted, ref, reactive } from 'vue'
+import appPopup from '@/components/common/app-popup.vue'
+import NotificationProvider from './components/common/notificationProvider.vue'
 import { fetchLogsFavorite, checkFavorite, fetchLogsOB, fetchLogsFB } from '@/services/index'
-import AppModal from './components/common/app-modal.vue';
+import AppModal from './components/common/app-modal.vue'
+import { useAccount } from './services/account'
+
+const { logIn } = useAccount()
 const { openSocket, closeSocket } = useSocket(import.meta.env.VITE_API_URL)
 
 const isAuth = ref(sessionStorage?.getItem('isAuth') === 'true' ? true : false)
+
+const user = reactive({ username: '', password: '' })
+
 const login = ref('')
 const password = ref('')
-const envAuth = import.meta.env.VITE_AUTH === 'true'
+
 const logsContent = ref<string[]>([])
 const logsTitle = ref('')
 
 const isModalOpen = ref(false)
 
 onUnmounted(() => {
-    closeSocket();
-});
+    closeSocket()
+})
 
 openSocket()
 
-const logIn = () => {
-    if (login.value === import.meta.env.VITE_APP_LOGIN && password.value === import.meta.env.VITE_APP_PASSWORD) {
-        sessionStorage.setItem('isAuth', 'true')
-        isAuth.value = true
-        openSocket()
-    }
+// const logIn = () => {
+//     if (
+//         login.value === import.meta.env.VITE_APP_LOGIN &&
+//         password.value === import.meta.env.VITE_APP_PASSWORD
+//     ) {
+//         sessionStorage.setItem('isAuth', 'true')
+//         isAuth.value = true
+//         openSocket()
+//     }
+// }
+
+const handleLogIn = async () => {
+    const reponse = await logIn(user)
+    console.log(reponse);
 }
 
 const handleFetchLogs = async (type: string) => {
@@ -55,73 +69,42 @@ const handleFetchLogs = async (type: string) => {
 </script>
 
 <template>
-    <template v-if="!isAuth && envAuth">
+    <template v-if="!isAuth">
         <div class="authorization-wrp">
-            <form
-                class="authorization-form"
-                @submit.prevent="logIn"
-            >
-                <input
-                    class="custom-input"
-                    type="text"
-                    placeholder="Логин"
-                    v-model="login"
-                >
+            <form class="authorization-form" @submit.prevent="handleLogIn">
+                <div class="authorization-form__title">Вход</div>
+                <input class="custom-input" type="text" placeholder="Логин" v-model="login" />
                 <input
                     class="custom-input"
                     type="password"
                     placeholder="Пароль"
                     v-model="password"
-                >
-                <button
-                    class="btn"
-                    type="submit"
-                >Войти</button>
+                />
+                <button class="btn btn-form" type="submit">Войти</button>
             </form>
         </div>
     </template>
     <template v-else>
         <div class="up-panel--wrp">
-
             <div class="up-panel">
-                <p>FB -<span class="blue">Синий</span> </p>
-                <p>OB - <span class="white">Белый</span> </p>
+                <p>FB -<span class="blue">Синий</span></p>
+                <p>OB - <span class="white">Белый</span></p>
             </div>
             <div class="up-panel__btns-wrp">
-                <button
-                    class="btn"
-                    @click="handleFetchLogs('fb')"
-                >Лог FB</button>
-                <button
-                    class="btn"
-                    @click="handleFetchLogs('ob')"
-                >Лог OB</button>
-                <button
-                    class="btn"
-                    @click="checkFavorite"
-                >Проверить избранное</button>
-                <button
-                    class="btn"
-                    @click="handleFetchLogs('favorite')"
-                >Лог избранное</button>
+                <button class="btn" @click="handleFetchLogs('fb')">Лог FB</button>
+                <button class="btn" @click="handleFetchLogs('ob')">Лог OB</button>
+                <button class="btn" @click="checkFavorite">Проверить избранное</button>
+                <button class="btn" @click="handleFetchLogs('favorite')">Лог избранное</button>
             </div>
         </div>
         <div class="app-wrp">
-            <app-league
-                class="league"
-                :name="'IPBL Pro Division'"
-                :color-title="'#0094FF'"
-            />
+            <app-league class="league" :name="'IPBL Pro Division'" :color-title="'#0094FF'" />
             <app-league
                 class="league"
                 :name="'Rocket Basketball League'"
                 :color-title="'#FF5C00'"
             />
-            <app-league
-                class="league"
-                :name="'IPBL Pro Division Women'"
-                :color-title="'#FF3D3D'"
-            />
+            <app-league class="league" :name="'IPBL Pro Division Women'" :color-title="'#FF3D3D'" />
             <app-league
                 class="league"
                 :name="'Rocket Basketball League Women'"
@@ -155,7 +138,7 @@ const handleFetchLogs = async (type: string) => {
     justify-content: space-between;
     border-radius: 3px;
     margin: 0 auto;
-    background: linear-gradient(90deg, #D0DEEA 0%, #1F2B3E 40%, #1F2B3E 60%, #D0DEEA 100%);
+    background: linear-gradient(90deg, #d0deea 0%, #1f2b3e 40%, #1f2b3e 60%, #d0deea 100%);
     margin-top: 20px;
 }
 
@@ -168,7 +151,7 @@ const handleFetchLogs = async (type: string) => {
 }
 
 .up-panel p {
-    color: #D0DEEA;
+    color: #d0deea;
     font-family: Ubuntu;
     font-size: 16px;
     font-style: normal;
@@ -177,7 +160,7 @@ const handleFetchLogs = async (type: string) => {
 }
 
 .up-panel p .blue {
-    color: #0094FF;
+    color: #0094ff;
     font-family: Ubuntu;
     font-size: 16px;
     font-style: normal;
@@ -186,7 +169,7 @@ const handleFetchLogs = async (type: string) => {
 }
 
 .up-panel p .white {
-    color: #FFF;
+    color: #fff;
     font-family: Ubuntu;
     font-size: 16px;
     font-style: normal;
@@ -272,14 +255,25 @@ const handleFetchLogs = async (type: string) => {
 }
 
 .authorization-form {
-    max-height: 300px;
     border-radius: 3px;
-    border: 2px solid var(--LightBlack, #1F2B3E);
-    background: #F9F9F9;
+    background: #d0deea;
     display: flex;
     flex-direction: column;
     grid-gap: 16px;
-    padding: 20px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+}
+
+.authorization-form__title {
+    color: #1f2b3e;
+    text-align: center;
+    font-family: Ubuntu;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 24px;
 }
 
 .custom-input {
@@ -294,11 +288,13 @@ const handleFetchLogs = async (type: string) => {
     line-height: 100%;
     border: none;
     border-radius: 0.4rem;
-    transition: box-shadow .3s;
+    transition: box-shadow 0.3s;
+    border-radius: 3px;
+    background: #fff;
 }
 
 .custom-input:placeholder {
-    color: #B0BEC5;
+    color: #b0bec5;
 }
 
 .custom-input:focus {
@@ -309,11 +305,26 @@ const handleFetchLogs = async (type: string) => {
 .btn {
     border-radius: 3px;
     font-size: 20px;
-    background: var(--LightBlue, #D0DEEA);
+    background: var(--LightBlue, #d0deea);
     width: 100%;
     padding: 10px;
     cursor: pointer;
     text-align: center;
     border: none;
+}
+
+.btn-form {
+    border-radius: 3px;
+    background: #1f2b3e;
+    color: #fff;
+    font-family: Ubuntu;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    width: fit-content;
+    padding: 11px 28px;
+    margin: 0 auto;
+    margin-top: 16px;
 }
 </style>
