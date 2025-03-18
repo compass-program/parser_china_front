@@ -2,47 +2,25 @@
 @import './font.css';
 
 #app {
-  width: fit-content;
-  min-height: 100vh;
-  font-weight: normal;
-  min-width: 100vw;
+    width: fit-content;
+    min-height: 100vh;
+    font-weight: normal;
+    min-width: 100vw;
 }
 
 ::-webkit-scrollbar {
-  width: 13px;
-  /* Ширина скроллбара */
-  border-radius: 3px;
-  scrollbar-width: thin;
-
+    width: 13px;
+    /* Ширина скроллбара */
+    border-radius: 3px;
+    scrollbar-width: thin;
 }
 
 ::-webkit-scrollbar-track {
-  border: 2px solid var(--LightBlack, #1F2B3E);
-  background: #F9F9F9;
+    border: 2px solid var(--LightBlack, #1f2b3e);
+    background: #f9f9f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1F2B3E;
-  border-radius: 1px;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+    background: #1f2b3e;
+    border-radius: 1px;
 }
