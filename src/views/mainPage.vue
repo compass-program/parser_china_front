@@ -3,7 +3,6 @@ import { useSocket } from '@/services/socketIo'
 import appLeague from '@/components/app-league.vue'
 import { onUnmounted, ref } from 'vue'
 import appPopup from '@/components/common/app-popup.vue'
-import NotificationProvider from '@/components/common/notificationProvider.vue'
 import { fetchLogsFavorite, checkFavorite, fetchLogsOB, fetchLogsFB } from '@/services/index'
 import AppModal from '@/components/common/app-modal.vue'
 
@@ -19,17 +18,6 @@ onUnmounted(() => {
 })
 
 openSocket()
-
-// const logIn = () => {
-//     if (
-//         login.value === import.meta.env.VITE_APP_LOGIN &&
-//         password.value === import.meta.env.VITE_APP_PASSWORD
-//     ) {
-//         sessionStorage.setItem('isAuth', 'true')
-//         isAuth.value = true
-//         openSocket()
-//     }
-// }
 
 const handleFetchLogs = async (type: string) => {
     switch (type) {
@@ -66,6 +54,10 @@ const handleFetchLogs = async (type: string) => {
             <button class="btn" @click="checkFavorite">Проверить избранное</button>
             <button class="btn" @click="handleFetchLogs('favorite')">Лог избранное</button>
         </div>
+        <div class="up-panel__lk-btns--wrp">
+            <button class="btn btn-dark" @click="$router.push('/admin/users')">В лк</button>
+            <div class="up-panel__logout"><img src="/icons/iconExit.webp" alt="logout" /></div>
+        </div>
     </div>
     <div class="app-wrp">
         <app-league class="league" :name="'IPBL Pro Division'" :color-title="'#0094FF'" />
@@ -77,7 +69,6 @@ const handleFetchLogs = async (type: string) => {
             :color-title="'#FF00C7'"
         />
         <appPopup ref="popup"></appPopup>
-        <NotificationProvider />
     </div>
     <AppModal
         :content="logsContent"
@@ -146,13 +137,28 @@ const handleFetchLogs = async (type: string) => {
     display: flex;
     align-items: center;
     grid-gap: 8px;
-    margin-right: 15%;
 }
 
-.up-panel__btns-wrp .btn {
+.up-panel__btns-wrp .btn,
+.up-panel__lk-btns--wrp .btn {
     font-size: 14px;
     padding: 3px 10px;
     width: fit-content;
+}
+
+.up-panel__lk-btns--wrp {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    grid-gap: 10px;
+}
+
+.up-panel__logout {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 .league {
@@ -209,5 +215,26 @@ const handleFetchLogs = async (type: string) => {
     display: flex;
     transform: translateY(-50%);
     cursor: pointer;
+}
+
+.btn {
+    border-radius: 3px;
+    background: #fff;
+    width: 100%;
+    color: #1f2b3e;
+    font-family: Ubuntu;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-align: center;
+    padding: 11px 28px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-dark {
+    color: #fff;
+    background: #1f2b3e;
 }
 </style>

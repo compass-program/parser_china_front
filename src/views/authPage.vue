@@ -31,10 +31,9 @@ const password = ref('')
 const { logIn } = useAccount()
 
 const handleLogIn = async () => {
-    const form = document.forms.authForm
+    const form = document.forms.namedItem('authForm') as HTMLFormElement
     const formdata = new FormData(form)
-    const reponse = await logIn(formdata)
-    console.log(reponse)
+    await logIn(formdata)
 }
 </script>
 
