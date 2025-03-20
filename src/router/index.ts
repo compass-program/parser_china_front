@@ -37,8 +37,6 @@ router.beforeEach((to, from, next) => {
     const accessToken = sessionStorage.getItem('accessToken')
     if (!accessToken && to.name !== 'auth') {
         next('/auth')
-    } else if (to.path.startsWith('/admin') && accessToken) {
-        next()
     } else {
         next()
     }

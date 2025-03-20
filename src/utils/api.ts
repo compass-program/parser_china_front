@@ -5,14 +5,17 @@ const http = axios.create({
 })
 
 const refreshToken = async () => {
-    const old_token = sessionStorage.getItem('access_token')
+    const old_token = (sessionStorage.getItem('accessToken') as string).replace('bearer ', '')
 
     const { data, status } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/token/refresh/`,
+        `${import.meta.env.VITE_API_URL}/auth/token/refresh/`,
         { old_token }
     )
+
     if (status === 200) {
-        sessionStorage.setItem('accessToken', `${data.token_type} ${data.access_token}`)
+        const newAccessToken = `${data.token_type} ${data.access_token}`
+        sessionStorage.setItem('accessToken', newAccessToken)
+        return newAccessToken
     }
 }
 
@@ -21,34 +24,12 @@ http.interceptors.request.use(
         const token = sessionStorage.getItem('accessToken')
 
         if (token) {
-            config.headers['Authorization'] = token
+            const newToken = await refreshToken()
+            config.headers['Authorization'] = newToken
         }
         return config
     },
     (error) => Promise.reject(error)
-)
-
-http.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        const originalRequest = error.config
-
-        // Проверяем, истек ли токен
-        if (error.response.status === 401 && !originalRequest._retry) {
-            console.log('123')
-            originalRequest._retry = true // Устанавливаем флаг, чтобы избежать повторного вызова
-            try {
-                const newToken = await refreshToken()
-                originalRequest.headers['Authorization'] = `Bearer ${newToken}`
-                return http(originalRequest) // Повторяем исходный запрос с новым токеном
-            } catch (refreshError) {
-                // Обработка ошибки обновления токена
-                return Promise.reject(refreshError)
-            }
-        }
-
-        return Promise.reject(error)
-    }
 )
 
 const httpService = {

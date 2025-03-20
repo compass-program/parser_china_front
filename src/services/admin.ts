@@ -8,9 +8,9 @@ interface NewUser {
 }
 
 export const useAdmin = () => {
-    const fetchSessions = async () => {
+    const fetchSessions = async (page: string, limit: string = '10') => {
         const { data, status } = await httpService.get<SessionsResponse>(
-            `${import.meta.env.VITE_API_URL}/auth/sessions`
+            `${import.meta.env.VITE_API_URL}/auth/sessions?limit=${limit}&offset=${page}`
         )
         return { data, status }
     }
@@ -22,8 +22,10 @@ export const useAdmin = () => {
         return { status }
     }
 
-    const fetchUsers = async () => {
-        const { data } = await httpService.get(`${import.meta.env.VITE_API_URL}/auth/users`)
+    const fetchUsers = async (page: string, limit: string = '10') => {
+        const { data } = await httpService.get(
+            `${import.meta.env.VITE_API_URL}/auth/users?limit=${limit}&offset=${page}`
+        )
         return data as UsersResponse
     }
 

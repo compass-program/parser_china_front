@@ -4,15 +4,17 @@
             <ul class="header__menu">
                 <li
                     class="header__menu__item"
-                    :class="{ active: $route.fullPath === '/admin/users' }"
+                    :class="{ active: $route.name === 'users' }"
                 >
-                    <RouterLink to="/admin/users">Пользователи</RouterLink>
+                    <RouterLink :to="{ name: 'users', query: { page: 1 } }"
+                        >Пользователи</RouterLink
+                    >
                 </li>
                 <li
                     class="header__menu__item"
-                    :class="{ active: $route.fullPath === '/admin/sessions' }"
+                    :class="{ active: $route.name === 'sessions' }"
                 >
-                    <RouterLink to="/admin/sessions">Сессии</RouterLink>
+                    <RouterLink :to="{ name: 'sessions', query: { page: 1 } }">Сессии</RouterLink>
                 </li>
                 <li class="header__menu__item" :class="{ active: $route.fullPath === '/' }">
                     <RouterLink to="/">Матчи</RouterLink>

@@ -31,6 +31,12 @@
                     </div>
                 </div>
             </div>
+            <AppPagination
+                v-if="usersList"
+                :count-items="usersList?.all_users"
+                :limit="10"
+                @change-page="fetchData"
+            />
         </div>
         <AppModal v-if="isModalOpen" @close="isModalOpen = false">
             <div class="modal__content--wrp">
@@ -46,12 +52,14 @@
 
 <script setup lang="ts">
 import AppModal from '@/components/common/app-modal.vue'
+import AppPagination from '@/components/common/app-pagination.vue'
 import CreateUser from '@/components/users/createUser.vue'
 import type { UsersResponse } from '@/interfaces/users'
 import { formatData } from '@/mixins/formatData'
 import { useAdmin } from '@/services/admin'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+
 
 const isModalOpen = ref(false)
 const deletedUser = ref<number>()
@@ -61,8 +69,8 @@ const store = useStore()
 
 const usersList = ref<UsersResponse>()
 
-const fetchData = async () => {
-    usersList.value = await fetchUsers()
+const fetchData = async (page: number = 0) => {
+    usersList.value = await fetchUsers(page.toString())
 }
 
 fetchData()
@@ -85,6 +93,9 @@ const handleDeleteUser = async () => {
 
 .page-col--right {
     width: calc(100% - 480px);
+    display: flex;
+    flex-direction: column;
+    grid-gap: 24px;
 }
 
 .table {

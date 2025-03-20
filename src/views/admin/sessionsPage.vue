@@ -33,6 +33,12 @@
                 </div>
             </div>
         </div>
+        <AppPagination
+            v-if="sessionsList"
+            :count-items="sessionsList?.total_sessions"
+            :limit="10"
+            @change-page="fetchData"
+        />
         <AppModal v-if="isModalOpen" @close="isModalOpen = false">
             <div class="modal__content--wrp">
                 <div class="modal__content__text">Завершить сессию?</div>
@@ -52,6 +58,7 @@ import { useStore } from 'vuex'
 import { formatData } from '@/mixins/formatData'
 import type { SessionsResponse } from '@/interfaces/sessions'
 import AppModal from '@/components/common/app-modal.vue'
+import AppPagination from '@/components/common/app-pagination.vue'
 
 const { fetchSessions, endSessions } = useAdmin()
 const store = useStore()
@@ -60,8 +67,8 @@ const isModalOpen = ref(false)
 const sessionsList = ref<SessionsResponse>()
 const choosenSessions = ref<number>()
 
-const fetchData = async () => {
-    const { data } = await fetchSessions()
+const fetchData = async (page: number = 0) => {
+    const { data } = await fetchSessions(page.toString())
     sessionsList.value = data
 }
 
@@ -78,6 +85,12 @@ const handleDeleteUser = async () => {
 </script>
 
 <style scoped>
+.page {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 24px;
+}
+
 .table {
     display: flex;
     flex-direction: column;

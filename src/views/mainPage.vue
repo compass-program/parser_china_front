@@ -5,6 +5,7 @@ import { onUnmounted, ref } from 'vue'
 import appPopup from '@/components/common/app-popup.vue'
 import { fetchLogsFavorite, checkFavorite, fetchLogsOB, fetchLogsFB } from '@/services/index'
 import AppModal from '@/components/common/app-modal.vue'
+import { isAdmin } from '@/services/account'
 
 const { openSocket, closeSocket } = useSocket(import.meta.env.VITE_API_URL)
 
@@ -12,6 +13,8 @@ const logsContent = ref<string[]>([])
 const logsTitle = ref('')
 
 const isModalOpen = ref(false)
+
+const isAdminStorageValue = ref(sessionStorage.getItem('isAdmin'))
 
 onUnmounted(() => {
     closeSocket()
@@ -54,8 +57,13 @@ const handleFetchLogs = async (type: string) => {
             <button class="btn" @click="checkFavorite">Проверить избранное</button>
             <button class="btn" @click="handleFetchLogs('favorite')">Лог избранное</button>
         </div>
-        <div class="up-panel__lk-btns--wrp">
-            <button class="btn btn-dark" @click="$router.push('/admin/users')">В лк</button>
+        <div class="up-panel__lk-btns--wrp" v-if="isAdmin || isAdminStorageValue === 'true'">
+            <button
+                class="btn btn-dark"
+                @click="$router.push({ name: 'users', query: { page: 1 } })"
+            >
+                В лк
+            </button>
             <div class="up-panel__logout"><img src="/icons/iconExit.webp" alt="logout" /></div>
         </div>
     </div>
