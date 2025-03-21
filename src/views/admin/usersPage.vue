@@ -61,7 +61,6 @@ import { useAdmin } from '@/services/admin'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 
-
 const isModalOpen = ref(false)
 const deletedUser = ref<number>()
 
@@ -71,10 +70,18 @@ const store = useStore()
 const usersList = ref<UsersResponse>()
 
 const fetchData = async (page: number = 0) => {
-    usersList.value = await fetchUsers(page.toString())
+    const data = await fetchUsers(page.toString())
+    if (data) {
+        usersList.value = data
+    }
 }
 
-fetchData()
+const timer = setTimeout(() => {
+    fetchData()
+    clearTimeout(timer)
+}, 300)
+
+// fetchData()
 
 const handleDeleteUser = async () => {
     const { status } = await deleteUser(deletedUser.value as number)

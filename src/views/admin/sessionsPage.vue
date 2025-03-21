@@ -74,7 +74,10 @@ const fetchData = async (page: number = 0) => {
     }
 }
 
-fetchData()
+const timer = setTimeout(() => {
+    fetchData()
+    clearTimeout(timer)
+}, 300)
 
 const handleDeleteUser = async () => {
     const { status } = await endSessions(choosenSessions.value as number)

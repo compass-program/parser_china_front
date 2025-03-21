@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useSocket } from '@/services/socketIo'
 import appLeague from '@/components/app-league.vue'
-import { onUnmounted, ref, onMounted } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import appPopup from '@/components/common/app-popup.vue'
 import { fetchLogsFavorite, checkFavorite, fetchLogsOB, fetchLogsFB } from '@/services/index'
 import AppModal from '@/components/common/app-modal.vue'
 import { isAdmin } from '@/services/account'
 import { useAccount } from '@/services/account'
 
-const { refreshToken, logOut } = useAccount()
+const { logOut } = useAccount()
 const { openSocket, closeSocket } = useSocket(import.meta.env.VITE_API_URL)
 
 const logsContent = ref<string[]>([])
@@ -23,10 +23,6 @@ onUnmounted(() => {
 })
 
 openSocket()
-
-onMounted(async () => {
-    await refreshToken()
-})
 
 const handleFetchLogs = async (type: string) => {
     switch (type) {
