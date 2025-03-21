@@ -41,9 +41,11 @@ const user = reactive<NewUser>({
 const handleCreateUser = async () => {
     const { status } = await createUser(user)
     if (status === 200) {
-        console.log('create')
         store.dispatch('notificationModule/addNotification', { text: 'Пользователь создан.' })
         emit('update')
+        user.username = ''
+        user.password = ''
+        user.is_admin = false
     }
 }
 </script>

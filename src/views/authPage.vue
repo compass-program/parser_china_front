@@ -8,6 +8,7 @@
                 name="username"
                 placeholder="Логин"
                 v-model="login"
+                :class="{ error: errorAuth }"
             />
             <input
                 class="custom-input"
@@ -15,7 +16,9 @@
                 name="password"
                 placeholder="Пароль"
                 v-model="password"
+                :class="{ error: errorAuth }"
             />
+            <span v-if="errorAuth" class="authorization-form__error-msg">{{ errorAuth }}</span>
             <button class="btn btn-form" type="submit">Войти</button>
         </form>
     </div>
@@ -28,12 +31,17 @@ import { ref } from 'vue'
 const login = ref('')
 const password = ref('')
 
+const errorAuth = ref('')
+
 const { logIn } = useAccount()
 
 const handleLogIn = async () => {
     const form = document.forms.namedItem('authForm') as HTMLFormElement
     const formdata = new FormData(form)
-    await logIn(formdata)
+    const { error } = await logIn(formdata)
+    if (error) {
+        errorAuth.value = error.detail as string
+    }
 }
 </script>
 
@@ -68,6 +76,15 @@ const handleLogIn = async () => {
     margin-bottom: 24px;
 }
 
+.authorization-form__error-msg {
+    color: #f00;
+    font-family: Ubuntu;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
 .custom-input {
     display: block;
     margin: 0;
@@ -83,6 +100,11 @@ const handleLogIn = async () => {
     transition: box-shadow 0.3s;
     border-radius: 3px;
     background: #fff;
+    transition: 0.3s;
+}
+
+.custom-input.error {
+    background-color: #ff9a9a !important;
 }
 
 .custom-input:placeholder {

@@ -31,7 +31,7 @@ const pagesCount = computed(() => {
 const handleChangePage = (page: number) => {
     router.push({ query: { page } })
     if (Number(router.currentRoute.value.query.page) !== page) {
-        emit('changePage', page - 1)
+        emit('changePage', (page - 1) * 10)
     }
 }
 </script>

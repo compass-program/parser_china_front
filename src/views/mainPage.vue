@@ -57,10 +57,11 @@ const handleFetchLogs = async (type: string) => {
             <button class="btn" @click="checkFavorite">Проверить избранное</button>
             <button class="btn" @click="handleFetchLogs('favorite')">Лог избранное</button>
         </div>
-        <div class="up-panel__lk-btns--wrp" v-if="isAdmin || isAdminStorageValue === 'true'">
+        <div class="up-panel__lk-btns--wrp">
             <button
                 class="btn btn-dark"
                 @click="$router.push({ name: 'users', query: { page: 1 } })"
+                v-if="isAdmin || isAdminStorageValue === 'true'"
             >
                 В лк
             </button>

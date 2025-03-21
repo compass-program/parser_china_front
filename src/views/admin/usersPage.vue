@@ -26,6 +26,7 @@
                     <div
                         class="table__row__item"
                         @click="(isModalOpen = true), (deletedUser = user.id)"
+                        v-if="!user.is_admin"
                     >
                         <img src="/icons/iconTrash.webp" alt="delete user" />
                     </div>

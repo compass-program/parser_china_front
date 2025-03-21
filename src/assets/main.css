@@ -24,3 +24,12 @@
     background: #1f2b3e;
     border-radius: 1px;
 }
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 50px white inset !important;
+    -webkit-text-fill-color: #1e1e1e;
+}
+
+input:-webkit-autofill.error {
+    -webkit-box-shadow: 0 0 0 50px #ff9a9a inset !important;
+}

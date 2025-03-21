@@ -1,6 +1,8 @@
 import type { SessionsResponse } from '@/interfaces/sessions'
 import type { UsersResponse } from '@/interfaces/users'
 import httpService from '@/utils/api'
+import { useAccount } from './account'
+
 interface NewUser {
     username: string
     password: string
@@ -8,10 +10,14 @@ interface NewUser {
 }
 
 export const useAdmin = () => {
-    const fetchSessions = async (page: string, limit: string = '10') => {
+    const { logOut } = useAccount()
+    const fetchSessions = async (offset: string, limit: string = '10') => {
         const { data, status } = await httpService.get<SessionsResponse>(
-            `${import.meta.env.VITE_API_URL}/auth/sessions?limit=${limit}&offset=${page}`
+            `${import.meta.env.VITE_API_URL}/auth/sessions?limit=${limit}&offset=${offset}`
         )
+        if (status === 401) {
+            await logOut()
+        }
         return { data, status }
     }
 
@@ -19,13 +25,19 @@ export const useAdmin = () => {
         const { status } = await httpService.delete(
             `${import.meta.env.VITE_API_URL}/auth/sessions/${id}`
         )
+        if (status === 401) {
+            await logOut()
+        }
         return { status }
     }
 
-    const fetchUsers = async (page: string, limit: string = '10') => {
-        const { data } = await httpService.get(
-            `${import.meta.env.VITE_API_URL}/auth/users?limit=${limit}&offset=${page}`
+    const fetchUsers = async (offset: string, limit: string = '10') => {
+        const { data, status } = await httpService.get(
+            `${import.meta.env.VITE_API_URL}/auth/users?limit=${limit}&offset=${offset}`
         )
+        if (status === 401) {
+            await logOut()
+        }
         return data as UsersResponse
     }
 
@@ -34,14 +46,20 @@ export const useAdmin = () => {
             `${import.meta.env.VITE_API_URL}/auth/register`,
             body
         )
+        if (status === 401) {
+            await logOut()
+        }
         return { data, status }
     }
 
     const deleteUser = async (id: number) => {
-        const response = await httpService.delete(
+        const { status } = await httpService.delete(
             `${import.meta.env.VITE_API_URL}/auth/users/${id}`
         )
-        return { status: response.status }
+        if (status === 401) {
+            await logOut()
+        }
+        return { status }
     }
 
     return { fetchSessions, fetchUsers, createUser, deleteUser, endSessions }
