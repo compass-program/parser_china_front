@@ -35,8 +35,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const accessToken = sessionStorage.getItem('accessToken')
+    const isAdmin = sessionStorage.getItem('isAdmin')
     if (!accessToken && to.name !== 'auth') {
         next('/auth')
+    } else if (isAdmin !== 'true' && to.fullPath.startsWith('/admin')) {
+        next('/')
     } else {
         next()
     }

@@ -10,6 +10,7 @@
             <input type="checkbox" id="checkbox" name="is_admin" v-model="user.is_admin" />
             <label for="checkbox"> Сделать администратором </label>
         </div>
+        <span v-if="errorCreate" class="form__error-msg">{{ errorCreate }}</span>
         <button class="form__btn" type="submit">Добавить</button>
     </form>
 </template>
@@ -18,6 +19,7 @@
 import { reactive } from 'vue'
 import { useAdmin } from '@/services/admin'
 import { useStore } from 'vuex'
+import { ref } from 'vue'
 
 const store = useStore()
 const { createUser } = useAdmin()
@@ -38,14 +40,21 @@ const user = reactive<NewUser>({
     is_admin: false
 })
 
+const errorCreate = ref('')
+
 const handleCreateUser = async () => {
-    const { status } = await createUser(user)
+    if (!user.username && !user.password) return
+    const { status, error } = await createUser(user)
     if (status === 200) {
         store.dispatch('notificationModule/addNotification', { text: 'Пользователь создан.' })
         emit('update')
         user.username = ''
         user.password = ''
         user.is_admin = false
+        errorCreate.value = ''
+    }
+    if (error && Object.keys(error).length) {
+        errorCreate.value = error
     }
 }
 </script>
@@ -78,10 +87,19 @@ const handleCreateUser = async () => {
     line-height: normal;
 }
 
+.form__error-msg {
+    color: #f53636;
+    font-family: Ubuntu;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: 8px;
+}
+
 .form__btn {
     padding: 11px 28px;
     border-radius: 3px;
-    background: #1f2b3e;
     color: #fff;
     font-family: Ubuntu;
     font-size: 16px;
@@ -90,6 +108,13 @@ const handleCreateUser = async () => {
     line-height: normal;
     max-width: 40%;
     margin-top: 16px;
+    cursor: pointer;
+    background: #1f2b3e;
+    transition: 0.3s;
+}
+
+.form__btn:hover {
+    background: #3e4e69;
 }
 
 .form__checkbox input {

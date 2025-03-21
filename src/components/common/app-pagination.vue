@@ -57,6 +57,7 @@ const handleChangePage = (page: number) => {
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+    cursor: pointer;
 }
 
 .pagintaion__item.active {

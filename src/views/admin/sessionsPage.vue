@@ -69,7 +69,9 @@ const choosenSessions = ref<number>()
 
 const fetchData = async (page: number = 0) => {
     const { data } = await fetchSessions(page.toString())
-    sessionsList.value = data
+    if (data) {
+        sessionsList.value = data
+    }
 }
 
 fetchData()
