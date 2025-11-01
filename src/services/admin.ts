@@ -10,6 +10,10 @@ interface NewUser {
     is_admin: false
 }
 
+interface Handicap {
+    value: number;
+}
+
 export const useAdmin = () => {
     const { logOut } = useAccount()
     const fetchSessions = async (offset: string, limit: string = '10') => {
@@ -111,5 +115,41 @@ export const useAdmin = () => {
         }
     }
 
-    return { fetchSessions, fetchUsers, createUser, deleteUser, endSessions }
+    const getHandicap = async () => {
+        try {
+        const { data, status } = await httpService.get<Handicap>(
+            `${import.meta.env.VITE_API_URL}/settings/handicap`
+        )
+        return { data, status, error: null }
+        } catch (error: unknown) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+            await logOut()
+        }
+        return { data: null, status: 500, error: 'Unknown error' }
+        }
+    }
+
+    const setHandicap = async (value: number) => {
+        try {
+        const { data, status } = await httpService.post<Handicap>(
+            `${import.meta.env.VITE_API_URL}/settings/handicap`,
+            { value }
+        )
+        return { data, status, error: null }
+        } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            if (error.response?.status === 401) {
+            await logOut()
+            }
+            return {
+            data: null,
+            status: error.response?.status ?? 500,
+            error: error.response?.data?.detail ?? 'Unknown error'
+            }
+        }
+        return { data: null, status: 500, error: 'Server Error' }
+        }
+    }
+    
+    return { fetchSessions, fetchUsers, createUser, deleteUser, endSessions, getHandicap, setHandicap, }
 }

@@ -2,6 +2,8 @@
     <div class="page-cols">
         <div class="page-col page-col--left">
             <CreateUser @update="fetchData" />
+            <div style="margin-top:24px;"></div>
+            <HandicapForm /> 
         </div>
         <div class="page-col page-col--right">
             <div class="table">
@@ -52,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import HandicapForm from '@/components/handicap/handicap-form.vue'
 import AppModal from '@/components/common/app-modal.vue'
 import AppPagination from '@/components/common/app-pagination.vue'
 import CreateUser from '@/components/users/createUser.vue'

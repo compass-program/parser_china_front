@@ -9,10 +9,10 @@ type LeagueColorHistory = Record<string, MatchColorHistoryItem>;
 type MatchColorHistory = Record<string, LeagueColorHistory>;
 
 const state = (): MatchColorHistory => ({
-  'IPBL Pro Division': {},
-  'Rocket Basketball League': {},
-  'IPBL Pro Division Women': {},
-  'Rocket Basketball League Women': {},
+  'VS-PANDA Exclusive EAFC24 UEFA Champions League': {},
+  'Belarus Regional League A': {},
+  'Belarusian Regional League West': {},
+  'Angola Bantu League': {},
 });
 
 const mutations = {

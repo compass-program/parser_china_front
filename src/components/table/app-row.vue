@@ -4,7 +4,7 @@
 		:class="{ gray: item?.site === 'fb.com' || item.bookmaker == 'fb' }"
 	>
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
-		<div class="table-row--item gray">{{ total_point || '-' }}</div>
+		<!-- <div class="table-row--item gray">{{ total_point || '-' }}</div>
 		<div
 			class="table-row--item clickable"
 			:style="`background: ${getColor(total_bet_0)}`"
@@ -18,9 +18,9 @@
 			@click="total_bet_1 ? handleClick($event, 'total_bet_1', total_point) : ''"
 		>
 			{{ total_bet_1 || '-' }}
-		</div>
-		<div class="table-row--item gray">
-			{{ handicap_point_0 || '-' }}
+		</div> -->
+		<div class="table-row--item">
+			{{ score_game || '-' }}
 		</div>
 		<div
 			class="table-row--item clickable"
@@ -29,6 +29,10 @@
 		>
 			{{ handicap_bet_0 || '-' }}
 		</div>
+		<div class="table-row--item gray">
+			{{ handicap_point_0 || '-' }}
+		</div>
+		
 		<div class="table-row--item gray">
 			{{ handicap_point_1 || '-' }}
 		</div>
@@ -56,16 +60,20 @@ const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible'
 
 const opponentsArr = opponents.split('-')
 
-const total_point = computed(() => {
-	return item.bookmaker ? item.total_point : item?.rate?.total_point
-})
+// const total_point = computed(() => {
+// 	return item.bookmaker ? item.total_point : item?.rate?.total_point
+// })
 
-const total_bet_0 = computed(() => {
-	return item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0
-})
+// const total_bet_0 = computed(() => {
+// 	return item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0
+// })
 
-const total_bet_1 = computed(() => {
-	return item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1
+// const total_bet_1 = computed(() => {
+// 	return item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1
+// })
+
+const score_game = computed(() => {
+	return item?.score_game || '-';
 })
 
 const handicap_point_0 = computed(() => {
