@@ -4,30 +4,30 @@
 		:class="{ gray: item?.site === 'fb.com' || item.bookmaker == 'fb' }"
 	>
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
-		<!-- <div class="table-row--item gray">{{ total_point || '-' }}</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(total_bet_0)}`"
 			@click="total_bet_0 ? handleClick($event, 'total_bet_0', total_point) : ''"
 		>
 			{{ total_bet_0 || '-' }}
 		</div>
+		<div class="table-row--item gray">
+			{{ total_point || '-' }}
+		</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(total_bet_1)}`"
 			@click="total_bet_1 ? handleClick($event, 'total_bet_1', total_point) : ''"
 		>
 			{{ total_bet_1 || '-' }}
-		</div> -->
+		</div>
+
 		<div class="table-row--item">
 			{{ score_game || '-' }}
 		</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(handicap_bet_0)}`"
 			@click="handicap_bet_0 ? handleClick($event, 'handicap_bet_0', handicap_point_0) : ''"
 		>
-			{{ handicap_bet_0 || '-' }}
+			<span :class="deltaClass0">{{ handicap_bet_0 || '-' }}</span>
 		</div>
 		<div class="table-row--item gray">
 			{{ handicap_point_0 || '-' }}
@@ -38,10 +38,9 @@
 		</div>
 		<div
 			class="table-row--item clickable"
-			:style="`background: ${getColor(handicap_bet_1)}`"
 			@click="handicap_bet_1 ? handleClick($event, 'handicap_bet_1', handicap_point_1) : ''"
 		>
-			{{ handicap_bet_1 || '-' }}
+			<span :class="deltaClass1">{{ handicap_bet_1 || '-' }}</span>
 		</div>
 		<div class="table-row--item">
 			{{ item?.server_time ? item?.server_time : '-' }}
@@ -53,24 +52,24 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-const { item, name, opponents } = defineProps(['item', 'name', 'opponents'])
+const { item, prevItem, name, opponents } = defineProps(['item', 'prevItem', 'name', 'opponents'])
 const store = useStore();
 
 const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible']);
 
 const opponentsArr = opponents.split('-')
 
-// const total_point = computed(() => {
-// 	return item.bookmaker ? item.total_point : item?.rate?.total_point
-// })
+const total_point = computed(() => {
+	return item.bookmaker ? item.total_point : item?.rate?.total_point
+})
 
-// const total_bet_0 = computed(() => {
-// 	return item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0
-// })
+const total_bet_0 = computed(() => {
+	return item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0
+})
 
-// const total_bet_1 = computed(() => {
-// 	return item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1
-// })
+const total_bet_1 = computed(() => {
+	return item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1
+})
 
 const score_game = computed(() => {
 	return item?.score_game || '-';
@@ -84,6 +83,11 @@ const handicap_bet_0 = computed(() => {
 	return item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0
 })
 
+const prev_handicap_bet_0 = computed(() => {
+	if (!prevItem) return undefined
+	return prevItem.bookmaker ? prevItem.handicap_bet_0 : prevItem?.rate?.handicap_bet_0
+})
+
 const handicap_point_1 = computed(() => {
 	return item.bookmaker ? item.handicap_point_1 : item?.rate?.handicap_point_1
 })
@@ -91,6 +95,14 @@ const handicap_point_1 = computed(() => {
 const handicap_bet_1 = computed(() => {
 	return item.bookmaker ? item.handicap_bet_1 : item?.rate?.handicap_bet_1
 })
+
+const prev_handicap_bet_1 = computed(() => {
+  if (!prevItem) return undefined
+  return prevItem.bookmaker ? prevItem.handicap_bet_1 : prevItem?.rate?.handicap_bet_1
+})
+
+const deltaClass0 = computed(() => getDeltaClass(handicap_bet_0.value, prev_handicap_bet_0.value))
+const deltaClass1 = computed(() => getDeltaClass(handicap_bet_1.value, prev_handicap_bet_1.value))
 
 const handleClick = (event: { clientX: number; clientY: number; }, bet: string, bet_filter: string) => {
 	if (isPopUpVisible.value) {
@@ -122,33 +134,42 @@ const getBookmaker = (site: string) => {
 	}
 }
 
-const getColor = (
-	item: string | undefined,
-): string | undefined => {
-	if (!item) return
-	const itemBuff = +item
-	if (itemBuff <= 1.73 && itemBuff >= 1.69) {
-		return '#FAFF00'; // Желтый
-	}
-	else if (itemBuff <= 1.68 && itemBuff >= 1.64) {
-		return '#FF8A00'; // Оранжевый
-	}
-	else if (itemBuff <= 1.63 && itemBuff > 1.59) {
-		return '#FF0000'; // Красный
-	}
-	else if (itemBuff <= 1.59) {
-		return '#9E00FF'; // Фиолетовый
-	} else {
-		return
-
-	}
+const getDeltaClass = (curr?: string, prev?: string) => {
+  const c = Number(curr), p = Number(prev)
+  if (Number.isFinite(c) && Number.isFinite(p)) {
+    if (c < p) return 'down'
+    if (c > p) return 'up'
+  }
+  return ''
 }
+
+// const getColor = (
+// 	item: string | undefined,
+// ): string | undefined => {
+// 	if (!item) return
+// 	const itemBuff = +item
+// 	if (itemBuff <= 1.73 && itemBuff >= 1.69) {
+// 		return '#FAFF00'; // Желтый
+// 	}
+// 	else if (itemBuff <= 1.68 && itemBuff >= 1.64) {
+// 		return '#FF8A00'; // Оранжевый
+// 	}
+// 	else if (itemBuff <= 1.63 && itemBuff > 1.59) {
+// 		return '#FF0000'; // Красный
+// 	}
+// 	else if (itemBuff <= 1.59) {
+// 		return '#9E00FF'; // Фиолетовый
+// 	} else {
+// 		return
+
+// 	}
+// }
 </script>
 
 <style scoped>
 .table-row {
 	display: grid;
-	grid-template-columns: 2fr repeat(7, 1fr) 1fr;
+	grid-template-columns: 2fr repeat(8, 1fr) 1fr;
 	font-family: Ubuntu;
 	font-size: 12px;
 	font-style: normal;
@@ -184,4 +205,12 @@ const getColor = (
 .clickable {
 	cursor: pointer;
 }
+.up {
+  color: #e53935;
+}
+
+.down {
+  color: #1e8e3e;
+}
+
 </style>
