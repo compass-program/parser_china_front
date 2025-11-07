@@ -21,6 +21,24 @@
         <!-- AKTY -->
         <div class="table" v-if="aktyMatches.length">
             <div class="table-title">akty.com</div>
+
+            <!-- Шапка таблицы -->
+            <div class="table-row header">
+              <div class="table-row--item">Время</div>
+              <div class="table-row--item">Счёт</div>
+              <div class="table-row--item">1</div>
+              <div class="table-row--item">2</div>
+              <div class="table-row--item">X</div>
+              <div class="table-row--item">ФД к</div>
+              <div class="table-row--item">ФД з</div>
+              <div class="table-row--item">ФГ з</div>
+              <div class="table-row--item">ФГ к</div>
+              <div class="table-row--item">ТБ</div>
+              <div class="table-row--item">Тотал</div>
+              <div class="table-row--item">ТМ</div>
+              <div class="table-row--item">Сервер</div>
+            </div>
+
             <template v-for="(item, index) in aktyMatches" :key="'akty' + index">
             <app-row :item="item" :prev-item="aktyMatches[index+1]" :name="name" :opponents="props.opponents" />
             </template>
@@ -29,6 +47,24 @@
         <!-- FB -->
         <div class="table table-fb" v-if="fbMatches.length">
             <div class="table-title">fb.com</div>
+
+            <!-- Шапка таблицы -->
+            <div class="table-row header">
+              <div class="table-row--item">Время</div>
+              <div class="table-row--item">1</div>
+              <div class="table-row--item">2</div>
+              <div class="table-row--item">X</div>
+              <div class="table-row--item">ТБ</div>
+              <div class="table-row--item">Тотал</div>
+              <div class="table-row--item">ТМ</div>
+              <div class="table-row--item">Счёт</div>
+              <div class="table-row--item">ФД к</div>
+              <div class="table-row--item">ФД з</div>
+              <div class="table-row--item">ФГ з</div>
+              <div class="table-row--item">ФГ к</div>
+              <div class="table-row--item">Сервер</div>
+            </div>
+
             <template v-for="(item, index) in fbMatches" :key="'fb' + index">
             <app-row :item="item" :prev-item="fbMatches[index+1]" :name="name" :opponents="props.opponents" />
             </template>
@@ -40,6 +76,7 @@
         <!-- AKTY HISTORY -->
         <div class="table" v-if="aktyHistory.length">
             <div class="table-title">akty.com — история</div>
+
             <template v-for="(color, idx) in aktyHistory" :key="'akty-h' + idx">
             <template v-for="(item, key) in color" :key="'akty-h-item' + key">
                 <div
@@ -164,16 +201,45 @@ const getKey = (key: string, item: RateData) => {
 .match-title--counter .count { display: flex; align-items: center; gap: 4px; border-radius: 3px; padding: 2px 4px; background: #1F2B3E; color: #D0DEEA; }
 .match-title--counter .count div { width: 16px; height: 14px; border-radius: 7px; }
 
+/* === ТАБЛИЦЫ === */
 .table-wrp { max-height: 78%; height: 100%; overflow-y: auto; padding-right: 2px; background: #fff; }
-
 .tables-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-.table { border-radius: 3px; background: #fff; border: 2px solid #1f2b3e; display: flex; flex-direction: column; }
+/* Общие настройки таблиц */
+.table { 
+  border-radius: 3px; 
+  background: #fff; 
+  border: 2px solid #1f2b3e; 
+  display: flex; 
+  flex-direction: column; 
+  --grid-cols: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 70px;
+}
 .table-title { background: #1f2b3e; color: #d0deea; text-align: center; font-family: Ubuntu; font-size: 12px; font-weight: 700; padding: 6px; }
 .table-fb { background: #fff; }
 .no-data { text-align: center; padding: 12px; opacity: .7; }
-
-.table-row--item { display: flex; align-items: center; justify-content: center; padding: 7px; }
+/* === ШАПКА И СТРОКИ === */
+.table .table-row.header,
+.table .table-row {
+  display: grid;
+  grid-template-columns: var(--grid-cols);
+}
+/* Шапка таблицы */
+.table .table-row.header {
+  background-color: #223449;
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #3e576c;
+}
+.table .table-row--item {
+  box-sizing: border-box;
+  padding: 7px;
+  min-width: 0;
+  text-align: center;
+  border-right: 1px solid #1f2b3e;
+  white-space: nowrap;
+}
+.table .table-row--item:last-child { border-right: 0; }
 .table-row--collapse { display: grid; grid-template-columns: 3fr 6fr 1fr; }
 .table-row--collapse:not(:last-of-type) { border-bottom: 1px solid #1f2b3e; }
 .table-row--collapse.gray { background-color: #D0DEEA; }

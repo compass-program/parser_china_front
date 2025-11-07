@@ -1,4 +1,7 @@
 export interface RateData {
+    oneXtwo_home: string;
+    oneXtwo_away: string;
+    oneXtwo_draw: string,
     total_point: string;
     total_bet_0: string;
     total_bet_1: string;
@@ -21,6 +24,9 @@ export interface LeagueData {
     id?: number;
     match_id?: number;
     score_game?: string;
+    oneXtwo_home: string;
+    oneXtwo_away: string;
+    oneXtwo_draw: string,
     total_point?: string;
     total_bet_0?: string;
     total_bet_1?: string;

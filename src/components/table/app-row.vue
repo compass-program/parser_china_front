@@ -4,30 +4,28 @@
 		:class="{ gray: item?.site === 'fb.com' || item.bookmaker == 'fb' }"
 	>
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
-		<div
-			class="table-row--item clickable"
-			@click="total_bet_0 ? handleClick($event, 'total_bet_0', total_point) : ''"
-		>
-			{{ total_bet_0 || '-' }}
-		</div>
-		<div class="table-row--item gray">
-			{{ total_point || '-' }}
-		</div>
-		<div
-			class="table-row--item clickable"
-			@click="total_bet_1 ? handleClick($event, 'total_bet_1', total_point) : ''"
-		>
-			{{ total_bet_1 || '-' }}
-		</div>
 
 		<div class="table-row--item">
 			{{ score_game || '-' }}
 		</div>
-		<div
+
+		<div class="table-row--item">
+			<span :class="deltaClassOneXTwoHome">{{ oneXtwo_home || '-' }}</span>
+		</div>
+
+		<div class="table-row--item">
+			<span :class="deltaClassOneXTwoAway">{{ oneXtwo_away || '-' }}</span>
+		</div>
+		
+		<div class="table-row--item">
+			<span :class="deltaClassOneXTwoDraw">{{ oneXtwo_draw || '-' }}</span>
+		</div>
+
+				<div
 			class="table-row--item clickable"
 			@click="handicap_bet_0 ? handleClick($event, 'handicap_bet_0', handicap_point_0) : ''"
 		>
-			<span :class="deltaClass0">{{ handicap_bet_0 || '-' }}</span>
+			<span :class="deltaClassHandicap0">{{ handicap_bet_0 || '-' }}</span>
 		</div>
 		<div class="table-row--item gray">
 			{{ handicap_point_0 || '-' }}
@@ -40,8 +38,27 @@
 			class="table-row--item clickable"
 			@click="handicap_bet_1 ? handleClick($event, 'handicap_bet_1', handicap_point_1) : ''"
 		>
-			<span :class="deltaClass1">{{ handicap_bet_1 || '-' }}</span>
+			<span :class="deltaClassHandicap1">{{ handicap_bet_1 || '-' }}</span>
 		</div>
+
+		<div
+			class="table-row--item clickable"
+			@click="total_bet_0 ? handleClick($event, 'total_bet_0', total_point) : ''"
+		>
+			<span :class="deltaClassBet0">{{ total_bet_0 || '-' }}</span>
+		</div>
+		<div class="table-row--item gray">
+			{{ total_point || '-' }}
+		</div>
+		<div
+			class="table-row--item clickable"
+			@click="total_bet_1 ? handleClick($event, 'total_bet_1', total_point) : ''"
+		>
+			<span :class="deltaClassBet1">{{ total_bet_1 || '-' }}</span>
+		</div>
+
+		
+
 		<div class="table-row--item">
 			{{ item?.server_time ? item?.server_time : '-' }}
 		</div>
@@ -59,6 +76,31 @@ const isPopUpVisible = computed(() => store.getters['popUpModule/isPopUpVisible'
 
 const opponentsArr = opponents.split('-')
 
+const oneXtwo_home = computed(() => {
+	return item.bookmaker ? item.oneXtwo_home : item?.rate?.oneXtwo_home
+})
+const prev_oneXtwo_home  = computed(() => {
+	if (!prevItem) return undefined
+	return prevItem.bookmaker ? prevItem.oneXtwo_home  : prevItem?.rate?.oneXtwo_home 
+})
+
+const oneXtwo_away = computed(() => {
+	return item.bookmaker ? item.oneXtwo_away : item?.rate?.oneXtwo_away
+})
+const prev_oneXtwo_away  = computed(() => {
+	if (!prevItem) return undefined
+	return prevItem.bookmaker ? prevItem.oneXtwo_away  : prevItem?.rate?.oneXtwo_away 
+})
+
+const oneXtwo_draw = computed(() => {
+	return item.bookmaker ? item.oneXtwo_draw : item?.rate?.oneXtwo_draw
+})
+const prev_oneXtwo_draw = computed(() => {
+	if (!prevItem) return undefined
+	return prevItem.bookmaker ? prevItem.oneXtwo_draw  : prevItem?.rate?.oneXtwo_draw 
+})
+
+
 const total_point = computed(() => {
 	return item.bookmaker ? item.total_point : item?.rate?.total_point
 })
@@ -66,9 +108,17 @@ const total_point = computed(() => {
 const total_bet_0 = computed(() => {
 	return item.bookmaker ? item.total_bet_0 : item?.rate?.total_bet_0
 })
+const prev_total_bet_0 = computed(() => {
+	if (!prevItem) return undefined
+	return prevItem.bookmaker ? prevItem.total_bet_0 : prevItem?.rate?.total_bet_0
+})
 
 const total_bet_1 = computed(() => {
 	return item.bookmaker ? item.total_bet_1 : item?.rate?.total_bet_1
+})
+const prev_total_bet_1 = computed(() => {
+	if (!prevItem) return undefined
+	return prevItem.bookmaker ? prevItem.total_bet_1 : prevItem?.rate?.total_bet_1
 })
 
 const score_game = computed(() => {
@@ -82,7 +132,6 @@ const handicap_point_0 = computed(() => {
 const handicap_bet_0 = computed(() => {
 	return item.bookmaker ? item.handicap_bet_0 : item?.rate?.handicap_bet_0
 })
-
 const prev_handicap_bet_0 = computed(() => {
 	if (!prevItem) return undefined
 	return prevItem.bookmaker ? prevItem.handicap_bet_0 : prevItem?.rate?.handicap_bet_0
@@ -95,14 +144,20 @@ const handicap_point_1 = computed(() => {
 const handicap_bet_1 = computed(() => {
 	return item.bookmaker ? item.handicap_bet_1 : item?.rate?.handicap_bet_1
 })
-
 const prev_handicap_bet_1 = computed(() => {
   if (!prevItem) return undefined
   return prevItem.bookmaker ? prevItem.handicap_bet_1 : prevItem?.rate?.handicap_bet_1
 })
 
-const deltaClass0 = computed(() => getDeltaClass(handicap_bet_0.value, prev_handicap_bet_0.value))
-const deltaClass1 = computed(() => getDeltaClass(handicap_bet_1.value, prev_handicap_bet_1.value))
+const deltaClassOneXTwoHome  = computed(() => getDeltaClass(oneXtwo_home.value, prev_oneXtwo_home.value))
+const deltaClassOneXTwoAway = computed(() => getDeltaClass(oneXtwo_away.value, prev_oneXtwo_away.value))
+const deltaClassOneXTwoDraw = computed(() => getDeltaClass(oneXtwo_draw.value, prev_oneXtwo_draw.value))
+
+const deltaClassBet0  = computed(() => getDeltaClass(total_bet_0.value, prev_total_bet_0.value))
+const deltaClassBet1 = computed(() => getDeltaClass(total_bet_1.value, prev_total_bet_1.value))
+
+const deltaClassHandicap0 = computed(() => getDeltaClass(handicap_bet_0.value, prev_handicap_bet_0.value))
+const deltaClassHandicap1 = computed(() => getDeltaClass(handicap_bet_1.value, prev_handicap_bet_1.value))
 
 const handleClick = (event: { clientX: number; clientY: number; }, bet: string, bet_filter: string) => {
 	if (isPopUpVisible.value) {
@@ -168,8 +223,8 @@ const getDeltaClass = (curr?: string, prev?: string) => {
 
 <style scoped>
 .table-row {
-	display: grid;
-	grid-template-columns: 2fr repeat(8, 1fr) 1fr;
+	/* display: grid;
+	grid-template-columns: 2fr repeat(11, 1fr) 1fr; */
 	font-family: Ubuntu;
 	font-size: 12px;
 	font-style: normal;
@@ -189,7 +244,7 @@ const getDeltaClass = (curr?: string, prev?: string) => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 7px;
+	padding: 5px;
 	min-width: 45px;
 }
 

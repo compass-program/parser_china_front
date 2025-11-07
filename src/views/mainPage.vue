@@ -50,7 +50,7 @@ const handleFetchLogs = async (type: string) => {
 <template>
     <div class="up-panel--wrp">
         <div class="up-panel">
-            <p>FB -<span class="blue">Синий</span></p>
+            <p>FB - <span class="blue">Синий</span></p>
             <p>OB - <span class="white">Белый</span></p>
         </div>
         <div class="up-panel__btns-wrp">
