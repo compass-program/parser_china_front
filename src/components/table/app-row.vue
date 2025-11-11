@@ -5,24 +5,23 @@
 	>
 		<div class="table-row--item">{{ item?.time_game || '-' }}</div>
 
-		<div class="table-row--item">
+		<div class="table-row--item divider">
 			{{ score_game || '-' }}
 		</div>
 
-		<div class="table-row--item">
+		<div class="table-row--item divider">
 			<span :class="deltaClassOneXTwoHome">{{ oneXtwo_home || '-' }}</span>
+		</div>
+		<div class="table-row--item">
+			<span :class="deltaClassOneXTwoDraw">{{ oneXtwo_draw || '-' }}</span>
 		</div>
 
 		<div class="table-row--item">
 			<span :class="deltaClassOneXTwoAway">{{ oneXtwo_away || '-' }}</span>
 		</div>
-		
-		<div class="table-row--item">
-			<span :class="deltaClassOneXTwoDraw">{{ oneXtwo_draw || '-' }}</span>
-		</div>
-
-				<div
-			class="table-row--item clickable"
+	
+		<div
+			class="table-row--item clickable divider"
 			@click="handicap_bet_0 ? handleClick($event, 'handicap_bet_0', handicap_point_0) : ''"
 		>
 			<span :class="deltaClassHandicap0">{{ handicap_bet_0 || '-' }}</span>
@@ -35,14 +34,14 @@
 			{{ handicap_point_1 || '-' }}
 		</div>
 		<div
-			class="table-row--item clickable"
+			class="table-row--item clickable "
 			@click="handicap_bet_1 ? handleClick($event, 'handicap_bet_1', handicap_point_1) : ''"
 		>
 			<span :class="deltaClassHandicap1">{{ handicap_bet_1 || '-' }}</span>
 		</div>
 
 		<div
-			class="table-row--item clickable"
+			class="table-row--item clickable divider"
 			@click="total_bet_0 ? handleClick($event, 'total_bet_0', total_point) : ''"
 		>
 			<span :class="deltaClassBet0">{{ total_bet_0 || '-' }}</span>
@@ -51,15 +50,12 @@
 			{{ total_point || '-' }}
 		</div>
 		<div
-			class="table-row--item clickable"
+			class="table-row--item clickable "
 			@click="total_bet_1 ? handleClick($event, 'total_bet_1', total_point) : ''"
 		>
 			<span :class="deltaClassBet1">{{ total_bet_1 || '-' }}</span>
 		</div>
-
-		
-
-		<div class="table-row--item">
+		<div class="table-row--item divider" >
 			{{ item?.server_time ? item?.server_time : '-' }}
 		</div>
 	</div>
@@ -266,6 +262,10 @@ const getDeltaClass = (curr?: string, prev?: string) => {
 
 .down {
   color: #1e8e3e;
+}
+
+.divider {
+	border-left: 3px solid #000;
 }
 
 </style>

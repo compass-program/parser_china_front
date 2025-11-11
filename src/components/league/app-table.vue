@@ -24,19 +24,19 @@
 
             <!-- Шапка таблицы -->
             <div class="table-row header">
-              <div class="table-row--item">Время</div>
-              <div class="table-row--item">Счёт</div>
+              <div class="table-row--item">Time</div>
+              <div class="table-row--item">Score</div>
               <div class="table-row--item">1</div>
-              <div class="table-row--item">2</div>
               <div class="table-row--item">X</div>
-              <div class="table-row--item">ФД к</div>
-              <div class="table-row--item">ФД з</div>
-              <div class="table-row--item">ФГ з</div>
-              <div class="table-row--item">ФГ к</div>
-              <div class="table-row--item">ТБ</div>
-              <div class="table-row--item">Тотал</div>
-              <div class="table-row--item">ТМ</div>
-              <div class="table-row--item">Сервер</div>
+              <div class="table-row--item">2</div>
+              <div class="table-row--item">H Cof.</div>
+              <div class="table-row--item">H</div>
+              <div class="table-row--item">A</div>
+              <div class="table-row--item">A Cof.</div>
+              <div class="table-row--item">O</div>
+              <div class="table-row--item">Total</div>
+              <div class="table-row--item">U</div>
+              <div class="table-row--item">Server</div>
             </div>
 
             <template v-for="(item, index) in aktyMatches" :key="'akty' + index">
@@ -50,19 +50,19 @@
 
             <!-- Шапка таблицы -->
             <div class="table-row header">
-              <div class="table-row--item">Время</div>
+              <div class="table-row--item">Time</div>
+              <div class="table-row--item">Score</div>
               <div class="table-row--item">1</div>
-              <div class="table-row--item">2</div>
               <div class="table-row--item">X</div>
-              <div class="table-row--item">ТБ</div>
-              <div class="table-row--item">Тотал</div>
-              <div class="table-row--item">ТМ</div>
-              <div class="table-row--item">Счёт</div>
-              <div class="table-row--item">ФД к</div>
-              <div class="table-row--item">ФД з</div>
-              <div class="table-row--item">ФГ з</div>
-              <div class="table-row--item">ФГ к</div>
-              <div class="table-row--item">Сервер</div>
+              <div class="table-row--item">2</div>
+              <div class="table-row--item">H Cof.</div>
+              <div class="table-row--item">H</div>
+              <div class="table-row--item">A</div>
+              <div class="table-row--item">A Cof.</div>
+              <div class="table-row--item">O</div>
+              <div class="table-row--item">Total</div>
+              <div class="table-row--item">U</div>
+              <div class="table-row--item">Server</div>
             </div>
 
             <template v-for="(item, index) in fbMatches" :key="'fb' + index">

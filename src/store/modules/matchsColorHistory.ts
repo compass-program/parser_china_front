@@ -9,7 +9,7 @@ type LeagueColorHistory = Record<string, MatchColorHistoryItem>;
 type MatchColorHistory = Record<string, LeagueColorHistory>;
 
 const state = (): MatchColorHistory => ({
-  'VS-PANDA Exclusive EAFC24 UEFA Champions League': {},
+  // 'VS-PANDA Exclusive EAFC24 UEFA Champions League': {},
   'Belarus Regional League A': {},
   'Belarusian Regional League West': {},
   'Angola Bantu League': {},

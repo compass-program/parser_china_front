@@ -8,7 +8,7 @@ import soundTwo from '@/assets/sound/sound_2.mp3'
 import soundThree from '@/assets/sound/sound_3.mp3'
 
 export const leagueStorage: LeagueStorage = reactive({
-    'VS-PANDA Exclusive EAFC24 UEFA Champions League': { value: {}, maxLength: 100 },
+    // 'VS-PANDA Exclusive EAFC24 UEFA Champions League': { value: {}, maxLength: 100 },
     'Belarus Regional League A': { value: {}, maxLength: 100 },
     'Belarusian Regional League West': { value: {}, maxLength: 100 },
     'Angola Bantu League': { value: {}, maxLength: 100 },

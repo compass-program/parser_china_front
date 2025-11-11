@@ -73,7 +73,7 @@ const handleFetchLogs = async (type: string) => {
         </div>
     </div>
     <div class="app-wrp">
-        <app-league class="league" :name="'VS-PANDA Exclusive EAFC24 UEFA Champions League'" :color-title="'#0094FF'" />
+        <!-- <app-league class="league" :name="'VS-PANDA Exclusive EAFC24 UEFA Champions League'" :color-title="'#0094FF'" /> -->
         <app-league class="league" :name="'Belarus Regional League A'" :color-title="'#FF5C00'" />
         <app-league class="league" :name="'Belarusian Regional League West'" :color-title="'#FF3D3D'" />
         <app-league
